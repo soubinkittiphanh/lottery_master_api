@@ -4,7 +4,7 @@ const config = {
   host: process.env.HOST || "localhost",
   db: {
     host: "mariadb-34248-0.cloudclusters.net",
-    user: "root",
+    user: "soubin",
     password: "SDAT@3480",
     database: "lottery_dev_db",
     port: 34248,
