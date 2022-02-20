@@ -8,6 +8,7 @@ const ProductNeck = require("../controllers/admin/productNeck");
 const PayRate = require("../controllers/admin/payRate");
 const Report=require("../controllers/report");
 const Sale=require("../controllers/sale");
+const Categ=require("../controllers/category");
 const user = async (app) => {
   app.get("/user", User.userget);
   app.get("/getuserid", User.usergetid);
@@ -65,6 +66,9 @@ const sale = async (app) => {
   await app.post("/sale", Sale.sale);
   await app.post("/cancel", Sale.reverse);
 };
+const category=async(app)=>{
+  await app.get("/category_f",Categ.fetchCategory)
+}
 
 module.exports = {
   user,
@@ -77,4 +81,5 @@ module.exports = {
   payRate,
   report,
   sale,
+  category,
 };
