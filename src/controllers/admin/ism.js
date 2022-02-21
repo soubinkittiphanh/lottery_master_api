@@ -79,6 +79,7 @@ const genISMID = async (req, res) => {
 const getISMREF = async (req, res) => {
   console.log("//::::::::::::::GET ISM REF MAX::::::::::::::");
   const selectDate=req.query.sel_date;
+  console.log("date: "+selectDate);
   await db.query(
     `SELECT  * FROM installment  WHERE ism_active = 1 AND ism_date='${selectDate}'`,
     (err, result) => {
