@@ -86,7 +86,7 @@ const getISMREF = async (req, res) => {
       if (err) {
         console.log(err);
       } else {
-        console.log("res");
+        console.log("res len: "+result.length.toString());
         res.send(result);
       }
     }
