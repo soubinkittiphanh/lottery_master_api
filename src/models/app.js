@@ -19,6 +19,7 @@ const buildApp=async(option={})=>{
     Router.report(app);
     Router.sale(app);
     Router.category(app);
+    Router.saleMaster(app);
     return app;
 }
 module.exports=buildApp;

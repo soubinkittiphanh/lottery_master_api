@@ -8,6 +8,7 @@ const ProductNeck = require("../controllers/admin/productNeck");
 const PayRate = require("../controllers/admin/payRate");
 const Report=require("../controllers/report");
 const Sale=require("../controllers/sale");
+const SaleMaster=require("../controllers/saleMaster");
 const Categ=require("../controllers/category");
 const user = async (app) => {
   app.get("/user", User.userget);
@@ -66,6 +67,10 @@ const sale = async (app) => {
   await app.post("/sale", Sale.sale);
   await app.post("/cancel", Sale.reverse);
 };
+const saleMaster = async (app) => {
+  await app.post("/sale_master", SaleMaster.sale);
+
+};
 const category=async(app)=>{
   await app.get("/category_f",Categ.fetchCategory)
 }
@@ -82,4 +87,5 @@ module.exports = {
   report,
   sale,
   category,
+  saleMaster,
 };
