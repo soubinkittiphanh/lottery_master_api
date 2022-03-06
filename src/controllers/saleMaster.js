@@ -32,8 +32,6 @@ const isOverLuckNum=async (txn)=>{
     const category=txn.category;
     const subcat=txn.subategory;
     const ismId=txn.ismId;
-
-    let response={};
     let maxType='';
     switch (luckNum.length) {
         case 1:
@@ -57,7 +55,7 @@ const isOverLuckNum=async (txn)=>{
         default:
             break;
     }
-    
+    console.log("SWITCHING: "+maxType);
     const sqlCom=`SELECT SUM(sale_price) AS recent_sale FROM sale WHERE  ism_id =${ismId} AND sub_cat_id=${subcat}  AND sale_num = ${luckNum}`;
     await Db.query(sqlCom,(er,re)=>{
         if(er) return {"status":"05","error":"server error"+er};
