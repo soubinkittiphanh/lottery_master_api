@@ -11,7 +11,7 @@ const sale=async(req,res)=>{
     const errorList=[];
     for(el of txnList){
         const responseCode=await isOverLuckNum(el);
-        if (responseCode["status"]=="00"){
+        if (responseCode.status=="00"){
             errorList.push(responseCode);
             console.log("ELEMENT LOOPING...");
         }
