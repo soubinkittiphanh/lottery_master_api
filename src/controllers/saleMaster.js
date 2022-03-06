@@ -34,7 +34,7 @@ const isOverLuckNum=async (txn)=>{
     const ismId=txn.ismId;
 
     let response={};
-    const maxType='';
+    let maxType='';
     switch (luckNum.length) {
         case 1:
             maxType=subCatCheck(luckNum)
