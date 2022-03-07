@@ -79,12 +79,12 @@ const isOverLuckNum = async (txn) => {
             if (er) return { "status": "05", "error": "server error" + er };
             maxSale = re[0][maxType];
             console.log("MAX SALE: "+maxSale);
-            if (maxSale > recentSale + amount) return { "status": "05", "error": luckNum + " is over maximum" }
-            return { "status": "00" };
+            if (maxSale > recentSale + amount) response= { "status": "05", "error": luckNum + " is over maximum" }
+            response= { "status": "00","error":"" };
         })
 
+        return response;
     })
-    return response;
 
 
 }
