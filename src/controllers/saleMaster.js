@@ -32,7 +32,7 @@ const processTxn=async(txnList)=>{
         let txn=txnList[i];
         sqlCom +=
             "(" +
-            bill_num +
+            "bill_num" +
             "," +
             txn["ismId"] +
             ",'" +
