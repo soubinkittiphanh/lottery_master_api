@@ -1,4 +1,5 @@
 
+const { response } = require("express");
 const Db = require("../config/dbconn");
 const sale = async (req, res) => {
     const body = req.body;
@@ -34,7 +35,7 @@ const isOverLuckNum = async (txn) => {
     const subcat = txn.subategory;
     const ismId = txn.ismId;
     let maxType = '';
-    let reponse = {};
+    let reponse = {'status':"00","error":""};
     switch (luckNum.length) {
         case 1:
             maxType = subCatCheck(luckNum)
@@ -62,10 +63,10 @@ const isOverLuckNum = async (txn) => {
     await Db.query(sqlCom, (er, re) => {
 
         if (er) {
-            console.log("error: SELECT RECECNT SALE"+er);
+            console.log("error: SELECT RECECNT SALE" + er);
             reponse = { "status": "05", "error": "server error" + er };
-            return reponse
         }
+        
         const recentSale = re[0]["recent_sale"]
         let maxSale = 0;
         //FIND MAX SALE
@@ -78,6 +79,7 @@ const isOverLuckNum = async (txn) => {
         })
 
     })
+    return response;
 
 
 }
