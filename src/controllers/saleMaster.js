@@ -34,7 +34,7 @@ const isOverLuckNum = async (txn) => {
     const luckNum = txn.luckyNumber;
     const amount = txn.amount;
     const category = txn.category;
-    const subcat = txn.subategory;
+    const subcat = txn.subcategory;
     const ismId = txn.ismId;
     let maxType = '';
     let response = {'status':"00","error":""};
