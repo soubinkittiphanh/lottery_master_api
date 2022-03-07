@@ -50,8 +50,8 @@ const getBillnum=async() =>{
             return 214303061761012;
         } else {
             console.log("OVER THEN 1: " + numRows);
-            console.log("NEXT_REF: " + res[0][0].pre_bill);
-            const next_ref = BigInt(res[0][0].pre_bill) + 1n;
+            console.log("NEXT_REF: " + rows[0].pre_bill);
+            const next_ref = BigInt(rows[0].pre_bill) + 1n;
             console.log("NEXT_REF + 1: " + next_ref);
             return next_ref;
         }
@@ -59,7 +59,7 @@ const getBillnum=async() =>{
         console.log("Get bill number error: "+error);
     }
 
-}//a
+}
 
 const isOverLuckNum = async (txn) => {
     const userId = txn.userId;
