@@ -70,8 +70,8 @@ const isOverLuckNum = async (txn) => {
 
 
         console.log("Q_RES" + q_res);
-        const q_data=q_res[0];
-        const recentSale = q_data[0]["recent_sale"]
+        const q_data=q_res[0][0];
+        const recentSale = q_data["recent_sale"]
         let maxSale = 0;
         console.log("RECENT SALE: " + recentSale);
         //FIND MAX SALE
