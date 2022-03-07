@@ -16,15 +16,39 @@ const sale = async (req, res) => {
             errorList.push(responseCode);
             console.log("ELEMENT LOOPING...");
         }
-
-
     }
+    processTxn(txnList);
     console.log("ERROR.LEN " + errorList.length);
     if (errorList.length>0) return res.json({ status: "00", data: errorList });
     res.send("Transaction completed");
+    
+}
 
-
-
+const processTxn=async(txnList)=>{
+    sqlCom='INSERT INTO `sale`(`sale_bill_id`, `ism_id`, `sale_num`, `sale_price`, `mem_id`, `client_date`,`qr_code`) VALUES ';
+    for (let i = 0; i < txnList.length; i++) {
+        const colon = i < txnList.length - 1 ? "," : ";";
+        sql +=
+            "(" +
+            bill_num +
+            "," +
+            ism +
+            ",'" +
+            sale[i].lek +
+            "'," +
+            sale[i].sale +
+            "," +
+            user +
+            ",'" +
+            sale[i].date +
+            "'," +
+            qr_code +
+            ")" +
+            colon +
+            "";
+    }
+    console.log("FINAL SQL COMMAND: "+sqlCom);
+    
 }
 
 const isOverLuckNum = async (txn) => {
@@ -70,8 +94,6 @@ const isOverLuckNum = async (txn) => {
         sqlCom = `SELECT ${maxType} FROM salelimit;`;
         maxSale=await checkMaxSale(sqlCom,maxType);
         if (maxSale > recentSale + amount) return response = { "status": "05", "error": luckNum + " is over maximum" }
-
-
     } catch (error) {
         console.log("Error: " + error);
         response = { "status": "05", "error": "server error" + er };
@@ -80,8 +102,6 @@ const isOverLuckNum = async (txn) => {
         "FINISHED ISOVER CHECK"
     );
     return response;
-
-
 }
 const subCatCheck = (subcat) => {
     return subcat.include("o") ? "over" : "under";
@@ -98,7 +118,6 @@ const checkMaxSale = async (sqlCom,sqlFieldName) => {
         console.log("Error: " + error);
         return maxSale;
     }
-
 }
 
 module.exports = {
