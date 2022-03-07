@@ -83,8 +83,8 @@ const isOverLuckNum = async (txn) => {
             response= { "status": "00","error":"" };
         })
 
-        return response;
     })
+    return response;
 
 
 }
