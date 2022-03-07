@@ -20,37 +20,20 @@ const sale = async (req, res) => {
     }
     processTxn(txnList);
     console.log("ERROR.LEN " + errorList.length);
-    if (errorList.length>0) return res.json({ status: "00", data: errorList });
+    if (errorList.length > 0) return res.json({ status: "00", data: errorList });
     res.send("Transaction completed");
-    
+
 }
 
-const processTxn=async(txnList)=>{
-    sqlCom='INSERT INTO `sale`(`sale_bill_id`, `ism_id`, `sale_num`, `sale_price`, `mem_id`, `client_date`,`qr_code`) VALUES ';
+const processTxn = async (txnList) => {
+    sqlCom = 'INSERT INTO `sale`(`sale_bill_id`, `ism_id`, `sale_num`, `sale_price`, `mem_id`, `client_date`,`qr_code`) VALUES ';
     for (let i = 0; i < txnList.length; i++) {
         const colon = i < txnList.length - 1 ? "," : ";";
-        let txn=txnList[i];
-        sqlCom +=
-            "(" +
-            "bill_num" +
-            "," +
-            txn["ismId"] +
-            ",'" +
-            txn["luckyNumber"] +
-            "'," +
-            txn["amount"] +
-            "," +
-            txn["userId"] +
-            ",'" +
-            txn["date"] +
-            "'," +
-            "qr_code" +
-            ")" +
-            colon +
-            "";
+        let txn = txnList[i];
+        sqlCom +=`('bill_num','${txn["ismId"]}','${txn["luckyNumber"]}',${txn["amount"]},${txn["userId"]},'${txn["date"]}','qr_code')${colon}`;
     }
-    console.log("FINAL SQL COMMAND: "+sqlCom);
-    
+    console.log("FINAL SQL COMMAND: " + sqlCom);
+
 }
 
 const isOverLuckNum = async (txn) => {
@@ -94,7 +77,7 @@ const isOverLuckNum = async (txn) => {
         console.log("RECENT SALE: " + recentSale);
         //FIND MAX SALE
         sqlCom = `SELECT ${maxType} FROM salelimit;`;
-        maxSale=await checkMaxSale(sqlCom,maxType);
+        maxSale = await checkMaxSale(sqlCom, maxType);
         if (maxSale > recentSale + amount) return response = { "status": "05", "error": luckNum + " is over maximum" }
     } catch (error) {
         console.log("Error: " + error);
@@ -109,8 +92,8 @@ const subCatCheck = (subcat) => {
     return subcat.include("o") ? "over" : "under";
 }
 
-const checkMaxSale = async (sqlCom,sqlFieldName) => {
-    let maxSale=0;
+const checkMaxSale = async (sqlCom, sqlFieldName) => {
+    let maxSale = 0;
     try {
         const [rows, fields] = await Db2.query(sqlCom);
         maxSale = rows[0][sqlFieldName];
