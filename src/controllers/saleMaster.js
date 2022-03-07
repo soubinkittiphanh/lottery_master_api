@@ -65,13 +65,13 @@ const isOverLuckNum = async (txn) => {
     let sqlCom = `SELECT SUM(sale_price) AS recent_sale FROM sale WHERE  ism_id =${ismId} AND sub_cat_id=${subcat}  AND sale_num = ${luckNum}`;
     try {
 
-        const q_res = await Db.query(sqlCom);
+        const [rows,fields] = await Db.query(sqlCom,[2,2]);
 
 
 
-        console.log("Q_RES: " + q_res[0]["recent_sale"]);
-        console.log( Object.keys(q_res));
-        const recentSale = q_res[0][0]["recent_sale"]
+        console.log("Q_RES: " + rows[0]);
+
+        const recentSale = rows[0]["recent_sale"]
         let maxSale = 0;
         console.log("RECENT SALE: " + recentSale);
         //FIND MAX SALE
