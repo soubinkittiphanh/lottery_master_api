@@ -36,7 +36,7 @@ const isOverLuckNum = async (txn) => {
     const subcat = txn.subategory;
     const ismId = txn.ismId;
     let maxType = '';
-    let reponse = {'status':"00","error":""};
+    let response = {'status':"00","error":""};
     switch (luckNum.length) {
         case 1:
             maxType = subCatCheck(luckNum)
@@ -65,7 +65,7 @@ const isOverLuckNum = async (txn) => {
 
         if (er) {
             console.log("error: SELECT RECECNT SALE" + er);
-            reponse = { "status": "05", "error": "server error" + er };
+            response = { "status": "05", "error": "server error" + er };
         }
         
         const recentSale = re[0]["recent_sale"]
