@@ -28,7 +28,7 @@ const processTxn=async(txnList)=>{
     sqlCom='INSERT INTO `sale`(`sale_bill_id`, `ism_id`, `sale_num`, `sale_price`, `mem_id`, `client_date`,`qr_code`) VALUES ';
     for (let i = 0; i < txnList.length; i++) {
         const colon = i < txnList.length - 1 ? "," : ";";
-        sql +=
+        sqlCom +=
             "(" +
             bill_num +
             "," +
