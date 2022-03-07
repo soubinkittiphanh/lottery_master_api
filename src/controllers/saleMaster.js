@@ -5,9 +5,10 @@ const sale = async (req, res) => {
     const body = req.body;
     console.log("//::::::::::::::SALE MASTER::::::::::::::");
     const txnList = body.txn;
-    const userId = body.userId;
+    const userId = txnList[0]["userId"];
     console.log("Txn len: " + txnList.length);
     console.log("User id: " + userId);
+    console.log("Txn date: " + txnList[0]["date"]);
     const errorList = [];
     for (el of txnList) {
         const responseCode = await isOverLuckNum(el);
@@ -28,17 +29,18 @@ const processTxn=async(txnList)=>{
     sqlCom='INSERT INTO `sale`(`sale_bill_id`, `ism_id`, `sale_num`, `sale_price`, `mem_id`, `client_date`,`qr_code`) VALUES ';
     for (let i = 0; i < txnList.length; i++) {
         const colon = i < txnList.length - 1 ? "," : ";";
+        let txn=txnList[i];
         sqlCom +=
             "(" +
             bill_num +
             "," +
-            ism +
+            txn["ismId"] +
             ",'" +
-            sale[i].lek +
+            txn["luckyNumber"] +
             "'," +
-            sale[i].sale +
+            txn["amount"] +
             "," +
-            user +
+            txn["userId"] +
             ",'" +
             sale[i].date +
             "'," +
