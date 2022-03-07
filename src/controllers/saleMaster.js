@@ -72,11 +72,13 @@ const isOverLuckNum = async (txn) => {
         
         const recentSale = re[0]["recent_sale"]
         let maxSale = 0;
+        console.log("RECENT SALE: "+recentSale);
         //FIND MAX SALE
         sqlCom = `SELECT ${maxType} FROM salelimit;`;
         Db.query(sqlCom, (er, re) => {
             if (er) return { "status": "05", "error": "server error" + er };
             maxSale = re[0][maxType];
+            console.log("MAX SALE: "+maxSale);
             if (maxSale > recentSale + amount) return { "status": "05", "error": luckNum + " is over maximum" }
             return { "status": "00" };
         })
