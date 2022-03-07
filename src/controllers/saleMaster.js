@@ -21,8 +21,9 @@ const sale = async (req, res) => {
 
 
     }
-    if (errorList) res.send({ "status": "00", "data": errorList });
     console.log("FINAL PROCESS NO ERROR ");
+    if (errorList) res.json({ "status": "00", "data": errorList });
+    res.send("Transaction completed");
 
 
 
