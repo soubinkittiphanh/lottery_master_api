@@ -90,11 +90,11 @@ const subCatCheck = (subcat) => {
     return subcat.include("o") ? "over" : "under";
 }
 
-const checkMaxSale = async (sqlCondion) => {
+const checkMaxSale = async (sqlCom) => {
     let maxSale=0;
     try {
 
-        const [rows, fields] = await Db2.query();
+        const [rows, fields] = await Db2.query(sqlCom);
         console.log("CHECKING MAX SALE");
         // if (er) return response = { "status": "05", "error": "server error" + er };
          maxSale = rows[0][maxType];
