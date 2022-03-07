@@ -1,5 +1,4 @@
 
-const { response } = require("express");
 const Db = require("../config/dbconn");
 const sale = async (req, res) => {
     const body = req.body;
@@ -22,7 +21,7 @@ const sale = async (req, res) => {
 
     }
     console.log("FINAL PROCESS NO ERROR ");
-    if (errorList) res.json({ "status": "00", "data": errorList });
+    if (errorList) res.json({ status: "00", data: errorList });
     res.send("Transaction completed");
 
 
