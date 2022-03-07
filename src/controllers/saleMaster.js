@@ -66,23 +66,24 @@ const isOverLuckNum = async (txn) => {
     try {
 
         const q_res = await Db.query(sqlCom);
-     
 
-  
-            console.log("Q_RES"+q_res);
-            const recentSale = q_res[0]["recent_sale"]
-            let maxSale = 0;
-            console.log("RECENT SALE: "+recentSale);
-            //FIND MAX SALE
-            sqlCom = `SELECT ${maxType} FROM salelimit;`;
-            await Db.query(sqlCom, (er, re) => {
-                if (er) return { "status": "05", "error": "server error" + er };
-                maxSale = re[0][maxType];
-                console.log("MAX SALE: "+maxSale);
-                if (maxSale > recentSale + amount) response= { "status": "05", "error": luckNum + " is over maximum" }
-                response= { "status": "00","error":"" };
-            })
-    
+
+
+        console.log("Q_RES" + q_res);
+        const q_data=q_res[0];
+        const recentSale = q_data[0]["recent_sale"]
+        let maxSale = 0;
+        console.log("RECENT SALE: " + recentSale);
+        //FIND MAX SALE
+        sqlCom = `SELECT ${maxType} FROM salelimit;`;
+        await Db.query(sqlCom, (er, re) => {
+            if (er) return { "status": "05", "error": "server error" + er };
+            maxSale = re[0][maxType];
+            console.log("MAX SALE: " + maxSale);
+            if (maxSale > recentSale + amount) response = { "status": "05", "error": luckNum + " is over maximum" }
+            response = { "status": "00", "error": "" };
+        })
+
 
     } catch (error) {
         console.log("Error: " + error);
