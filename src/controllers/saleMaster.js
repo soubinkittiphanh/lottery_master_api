@@ -22,8 +22,8 @@ const sale = async (req, res) => {
     }
     console.log("FINAL PROCESS NO ERROR ");
     console.log("ERROR.LEN "+errorList.length);
+    if (errorList) return res.json({ status: "00", data: errorList });
     res.send("Transaction completed");
-    // if (errorList) res.json({ status: "00", data: errorList });
 
 
 
