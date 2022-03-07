@@ -72,10 +72,10 @@ const isOverLuckNum = async (txn) => {
         //FIND MAX SALE
         sqlCom = `SELECT ${maxType} FROM salelimit;`;
         Db.query(sqlCom, (er, re) => {
-            if (er) return { "status": "05", "error": "server error" + er };
+            if (er) return response={ "status": "05", "error": "server error" + er };
             maxSale = re[0][maxType];
             console.log("MAX SALE: " + maxSale);
-            if (maxSale > recentSale + amount) response = { "status": "05", "error": luckNum + " is over maximum" }
+            if (maxSale > recentSale + amount) return response = { "status": "05", "error": luckNum + " is over maximum" }
             response = { "status": "00", "error": "" };
         })
 
@@ -84,6 +84,9 @@ const isOverLuckNum = async (txn) => {
         console.log("Error: " + error);
         response = { "status": "05", "error": "server error" + er };
     }
+    console.log(
+        "FINISHED ISOVER CHECK"
+    );
     return response;
 
 
