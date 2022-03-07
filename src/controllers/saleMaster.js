@@ -7,7 +7,7 @@ const sale = async (req, res) => {
     const userId = body.userId;
     console.log("Txn len: " + txnList.length);
     console.log("User id: " + userId);
-    res.send("well recieved");
+
     const errorList = [];
     for (el of txnList) {
         const responseCode = await isOverLuckNum(el);
