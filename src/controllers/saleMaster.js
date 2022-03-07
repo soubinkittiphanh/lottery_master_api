@@ -38,7 +38,7 @@ const isOverLuckNum = async (txn) => {
     const ismId = txn.ismId;
     let maxType = '';
     let response = {'status':"00","error":""};
-    console.log("ism: "+ismId+" subcat: "+subcat);
+    console.log("ism: "+ismId+" subcat: "+subcat+" category: "+category);
     switch (luckNum.length) {
         case 1:
             maxType = subCatCheck(luckNum)
