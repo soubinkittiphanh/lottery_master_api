@@ -1,5 +1,6 @@
 
 const Db = require("../config/dbconn");
+const Db2 = require("../config/dbconnPromise");
 const sale = async (req, res) => {
     const body = req.body;
     console.log("//::::::::::::::SALE MASTER::::::::::::::");
@@ -64,13 +65,8 @@ const isOverLuckNum = async (txn) => {
     console.log("SWITCHING: " + maxType);
     let sqlCom = `SELECT SUM(sale_price) AS recent_sale FROM sale WHERE  ism_id =${ismId} AND sub_cat_id=${subcat}  AND sale_num = ${luckNum}`;
     try {
-
-        const [rows,fields] = await Db.query(sqlCom,[2,2]);
-
-
-
+        const [rows,fields] = await Db2.query(sqlCom);
         console.log("Q_RES: " + rows);
-
         const recentSale = rows[0]["recent_sale"]
         let maxSale = 0;
         console.log("RECENT SALE: " + recentSale);
