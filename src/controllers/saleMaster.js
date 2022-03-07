@@ -8,13 +8,11 @@ const sale = async (req, res) => {
     const userId = body.userId;
     console.log("Txn len: " + txnList.length);
     console.log("User id: " + userId);
-
     const errorList = [];
     for (el of txnList) {
         const responseCode = await isOverLuckNum(el);
-        console.log("RESPONSE FULL CHECK" + responseCode);
         console.log("STATUS: " + responseCode.status);
-        if (responseCode.status == "00") {
+        if (responseCode.status != "00") {
             errorList.push(responseCode);
             console.log("ELEMENT LOOPING...");
         }
@@ -93,14 +91,9 @@ const subCatCheck = (subcat) => {
 const checkMaxSale = async (sqlCom,sqlFieldName) => {
     let maxSale=0;
     try {
-
         const [rows, fields] = await Db2.query(sqlCom);
-        console.log("CHECKING MAX SALE");
-        // if (er) return response = { "status": "05", "error": "server error" + er };
-         maxSale = rows[0][sqlFieldName];
+        maxSale = rows[0][sqlFieldName];
         console.log("MAX SALE: " + maxSale);
-        // if (maxSale > recentSale + amount) return response = { "status": "05", "error": luckNum + " is over maximum" }
-        response = { "status": "00", "error": "" };
         return maxSale;
     } catch (error) {
         console.log("Error: " + error);
