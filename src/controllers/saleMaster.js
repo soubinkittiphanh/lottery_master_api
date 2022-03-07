@@ -71,7 +71,7 @@ const isOverLuckNum = async (txn) => {
         console.log("RECENT SALE: " + recentSale);
         //FIND MAX SALE
         sqlCom = `SELECT ${maxType} FROM salelimit;`;
-        maxSale=await checkMaxSale(sqlCom);
+        maxSale=await checkMaxSale(sqlCom,maxType);
         if (maxSale > recentSale + amount) return response = { "status": "05", "error": luckNum + " is over maximum" }
 
 
@@ -90,14 +90,14 @@ const subCatCheck = (subcat) => {
     return subcat.include("o") ? "over" : "under";
 }
 
-const checkMaxSale = async (sqlCom) => {
+const checkMaxSale = async (sqlCom,sqlFieldName) => {
     let maxSale=0;
     try {
 
         const [rows, fields] = await Db2.query(sqlCom);
         console.log("CHECKING MAX SALE");
         // if (er) return response = { "status": "05", "error": "server error" + er };
-         maxSale = rows[0][maxType];
+         maxSale = rows[0][sqlFieldName];
         console.log("MAX SALE: " + maxSale);
         // if (maxSale > recentSale + amount) return response = { "status": "05", "error": luckNum + " is over maximum" }
         response = { "status": "00", "error": "" };
