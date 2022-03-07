@@ -27,14 +27,39 @@ const sale = async (req, res) => {
 
 const processTxn = async (txnList) => {
     sqlCom = 'INSERT INTO `sale`(`sale_bill_id`, `ism_id`, `sale_num`, `sale_price`, `mem_id`, `client_date`,`qr_code`) VALUES ';
+    const bill_num=await getBillnum();
     for (let i = 0; i < txnList.length; i++) {
         const colon = i < txnList.length - 1 ? "," : ";";
         let txn = txnList[i];
-        sqlCom +=`('bill_num','${txn["ismId"]}','${txn["luckyNumber"]}',${txn["amount"]},${txn["userId"]},'${txn["date"]}','qr_code')${colon}`;
+        sqlCom +=`('${bill_num}','${txn["ismId"]}','${txn["luckyNumber"]}',${txn["amount"]},${txn["userId"]},'${txn["date"]}','qr_code')${colon}`;
     }
     console.log("FINAL SQL COMMAND: " + sqlCom);
 
 }
+
+const getBillnum=async() =>{
+    try {
+        const [rows,fields] = await Db2.query(
+            `SELECT MAX(sale_bill_id) as pre_bill FROM sale HAVING MAX(sale_bill_id) IS NOT null`
+        );
+    
+        const numRows = rows.length;
+        console.log("numrow: " + numRows);
+        if (numRows < 1) {
+            console.log("LESS THEN 1: " + numRows);
+            return 214303061761012;
+        } else {
+            console.log("OVER THEN 1: " + numRows);
+            console.log("NEXT_REF: " + res[0][0].pre_bill);
+            const next_ref = BigInt(res[0][0].pre_bill) + 1n;
+            console.log("NEXT_REF + 1: " + next_ref);
+            return next_ref;
+        }
+    } catch (error) {
+        console.log("Get bill number error: "+error);
+    }
+
+}//a
 
 const isOverLuckNum = async (txn) => {
     const userId = txn.userId;
