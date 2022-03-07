@@ -42,9 +42,9 @@ const processTxn=async(txnList)=>{
             "," +
             txn["userId"] +
             ",'" +
-            sale[i].date +
+            txn["date"] +
             "'," +
-            qr_code +
+            "qr_code" +
             ")" +
             colon +
             "";
