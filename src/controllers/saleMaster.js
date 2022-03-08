@@ -12,6 +12,9 @@ const sale = async (req, res) => {
     console.log("User id: " + userId);
     console.log("Header date: " + txnHeader.date);
     console.log("Ism Id: " + txnHeader.ismId);
+    console.log("Barcode: " + txnHeader.qrCode);
+    console.log("Category: " + txnHeader.category);
+    console.log("Subcat: " + txnHeader.subcategory);
     const errorList = [];
     for (el of txnList) {
         const responseCode = await isOverLuckNum(el);
