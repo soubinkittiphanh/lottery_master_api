@@ -4,11 +4,14 @@ const Db2 = require("../config/dbconnPromise");
 const sale = async (req, res) => {
     const body = req.body;
     console.log("//::::::::::::::SALE MASTER::::::::::::::");
+    const txnHeader=body.txnHeader;
     const txnList = body.txn;
-    const userId = txnList[0]["userId"];
+    const userId = txnHeader["userId"];
+    const barCode=txnHeader["qrCode"]
     console.log("Txn len: " + txnList.length);
     console.log("User id: " + userId);
-    console.log("Txn date: " + txnList[0]["date"]);
+    console.log("Header date: " + txnHeader.date);
+    console.log("Ism Id: " + txnHeader.ismId);
     const errorList = [];
     for (el of txnList) {
         const responseCode = await isOverLuckNum(el);
@@ -18,20 +21,20 @@ const sale = async (req, res) => {
             console.log("ELEMENT LOOPING...");
         }
     }
-    processTxn(txnList);
+    processTxn(txnList,barCode);
     console.log("ERROR.LEN " + errorList.length);
     if (errorList.length > 0) return res.json({ status: "00", data: errorList });
     res.send("Transaction completed");
 
 }
 
-const processTxn = async (txnList) => {
+const processTxn = async (txnList,barCode) => {
     sqlCom = 'INSERT INTO `sale`(`sale_bill_id`, `ism_id`, `sale_num`, `sale_price`, `mem_id`, `client_date`,`qr_code`) VALUES ';
     const bill_num=await getBillnum();
     for (let i = 0; i < txnList.length; i++) {
         const colon = i < txnList.length - 1 ? "," : ";";
         let txn = txnList[i];
-        sqlCom +=`('${bill_num}','${txn["ismId"]}','${txn["luckyNumber"]}',${txn["amount"]},${txn["userId"]},'${txn["date"]}','qr_code')${colon}`;
+        sqlCom +=`('${bill_num}','${txn["ismId"]}','${txn["luckyNumber"]}',${txn["amount"]},${txn["userId"]},'${txn["date"]}','${barCode}')${colon}`;
     }
     console.log("FINAL SQL COMMAND: " + sqlCom);
 
