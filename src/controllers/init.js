@@ -23,7 +23,7 @@ const auth = async (req, res) => {
     "SELECT FLOOR(SUM(IF(s.is_cancel=0,s.sale_price,0))*com_sale/100) AS sale,m.brc_code,b.co_comm, m.mem_id as mem_id,m.com_sale as com_sale,m.com_win as com_win,m.mem_pass as mem_pass,m.mem_name as mem_name,m.active as active,m.admin as admin, MAX(i.ism_ref) as ism_ref, i.ism_date as ism_date,g.m_home,g.m_category,g.m_branch,g.m_limited_price,g.m_pay_rate,g.m_sale,g.m_re_sale,g.m_re_win,g.m_list_member,g.m_add_member,g.m_master,g.m_group FROM member m LEFT JOIN installment i ON i.ism_active = 1 LEFT JOIN tbl_group_permission g ON m.group_code=g.group_code LEFT JOIN branch b ON b.co_code=m.brc_code LEFT JOIN sale s ON s.mem_id=m.mem_id AND s.ism_id=(SELECT MAX(ism_ref) FROM installment) WHERE m.mem_id ='" +
     uid +
     "' and active=1";
-  await db.query(sql, (err, result) => {
+   db.query(sql, (err, result) => {
     if (err) {
       console.log(err);
     } else {

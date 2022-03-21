@@ -10,6 +10,9 @@ const Report=require("../controllers/report");
 const Sale=require("../controllers/sale");
 const SaleMaster=require("../controllers/saleMaster");
 const Categ=require("../controllers/category");
+const Authen=require("../controllers/signon");
+const hook=require("../middleware")
+
 const user = async (app) => {
   app.get("/user", User.userget);
   app.get("/getuserid", User.usergetid);
@@ -74,6 +77,12 @@ const saleMaster = async (app) => {
 const category=async(app)=>{
   await app.get("/category_f",Categ.fetchCategory)
 }
+const authen=async(app)=>{
+  await app.post("/login",Authen.login)
+}
+const validate=async(app)=>{
+  await app.post("/validate_token",hook.authen.validateToken)
+}
 
 module.exports = {
   user,
@@ -88,4 +97,6 @@ module.exports = {
   sale,
   category,
   saleMaster,
+  authen,
+  validate
 };
