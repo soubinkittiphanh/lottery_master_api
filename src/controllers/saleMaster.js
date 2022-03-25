@@ -1,4 +1,5 @@
 
+const res = require("express/lib/response");
 const Db = require("../config/dbconn");
 const Db2 = require("../config/dbconnPromise");
 const sale = async (req, res) => {
@@ -21,13 +22,15 @@ const sale = async (req, res) => {
         console.log("STATUS: " + responseCode.status);
         if (responseCode.status != "00") {
             errorList.push(responseCode);
-            console.log("ELEMENT LOOPING...");
+            console.log("ELEMENT LOOPING...STOP");
+            return res.json({ status: "00", data: errorList });
         }
+        console.log("ELEMENT LOOPING...");
     }
-    processTxn(txnList,barCode);
     console.log("ERROR.LEN " + errorList.length);
     if (errorList.length > 0) return res.json({ status: "00", data: errorList });
-    res.send("Transaction completed");
+    processTxn(txnList,barCode);
+    // res.send("Transaction completed");
 
 }
 
@@ -39,6 +42,11 @@ const processTxn = async (txnList,barCode) => {
         let txn = txnList[i];
         sqlCom +=`('${bill_num}','${txn["ismId"]}','${txn["luckyNumber"]}',${txn["amount"]},${txn["userId"]},'${txn["date"]}','${barCode}')${colon}`;
     }
+    Db.query(sqlCom,(er,re)=>{
+        if(er) res.json({status:"05",desc:er})
+        console.log("RESULT SQL: "+re);
+        res.json({status:"00",desc:"Transaction completed"})
+    })
     console.log("FINAL SQL COMMAND: " + sqlCom);
 
 }
