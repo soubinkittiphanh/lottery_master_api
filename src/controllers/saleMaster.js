@@ -29,12 +29,12 @@ const sale = async (req, res) => {
     }
     console.log("ERROR.LEN " + errorList.length);
     if (errorList.length > 0) return res.json({ status: "00", data: errorList });
-    processTxn(txnList,barCode);
+    processTxn(txnList,barCode,res);
     // res.send("Transaction completed");
 
 }
 
-const processTxn = async (txnList,barCode) => {
+const processTxn = async (txnList,barCode,res) => {
     sqlCom = 'INSERT INTO `sale`(`sale_bill_id`, `ism_id`, `sale_num`, `sale_price`, `mem_id`, `client_date`,`qr_code`) VALUES ';
     const bill_num=await getBillnum();
     for (let i = 0; i < txnList.length; i++) {
