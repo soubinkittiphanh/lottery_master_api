@@ -43,8 +43,10 @@ const processTxn = async (txnList,barCode) => {
         sqlCom +=`('${bill_num}','${txn["ismId"]}','${txn["luckyNumber"]}',${txn["amount"]},${txn["userId"]},'${txn["date"].substring(0,19)}','${barCode}')${colon}`;
     }
     Db.query(sqlCom,(er,re)=>{
-        // console.log("RESULT SQL: "+re);
-        if(er) res.json({status:"05",desc:er})
+        if(er){
+            console.log("RESULT SQL: "+er);
+           return res.json({status:"05",desc:er})
+        } 
         res.json({status:"00",desc:"Transaction completed"})
     })
     console.log("FINAL SQL COMMAND: " + sqlCom);
