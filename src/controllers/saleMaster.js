@@ -40,7 +40,7 @@ const processTxn = async (txnList,barCode) => {
     for (let i = 0; i < txnList.length; i++) {
         const colon = i < txnList.length - 1 ? "," : ";";
         let txn = txnList[i];
-        sqlCom +=`('${bill_num}','${txn["ismId"]}','${txn["luckyNumber"]}',${txn["amount"]},${txn["userId"]},'${txn["date"]}','${barCode}')${colon}`;
+        sqlCom +=`('${bill_num}','${txn["ismId"]}','${txn["luckyNumber"]}',${txn["amount"]},${txn["userId"]},'${txn["date"].subString(19)}','${barCode}')${colon}`;
     }
     Db.query(sqlCom,(er,re)=>{
         // console.log("RESULT SQL: "+re);
