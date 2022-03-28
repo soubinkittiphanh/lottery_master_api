@@ -5,10 +5,10 @@ const Db2 = require("../config/dbconnPromise");
 const sale = async (req, res) => {
     const body = req.body;
     console.log("//::::::::::::::SALE MASTER::::::::::::::");
-    const txnHeader=body.txnHeader;
+    const txnHeader = body.txnHeader;
     const txnList = body.txn;
     const userId = txnHeader["userId"];
-    const barCode=txnHeader["qrCode"]
+    const barCode = txnHeader["qrCode"]
     console.log("Txn len: " + txnList.length);
     console.log("User id: " + userId);
     console.log("Header date: " + txnHeader.date);
@@ -18,8 +18,8 @@ const sale = async (req, res) => {
     console.log("Subcat: " + txnHeader.subcategory);
     const errorList = [];
     for (el of txnList) {
-        console.log("LEN OF EL: "+el.length);
-       if( el.length>6) return res.json({status:"01",desc:"INVALID LUCKY NUMBER"});
+        console.log("LEN OF EL: " + el.luckyNumber.length);
+        if (el.luckyNumber.length > 6) return res.json({ status: "01", desc: "INVALID LUCKY NUMBER" });
         const responseCode = await isOverLuckNum(el);
         console.log("STATUS: " + responseCode.status);
         if (responseCode.status != "00") {
@@ -31,36 +31,36 @@ const sale = async (req, res) => {
     }
     console.log("ERROR.LEN " + errorList.length);
     if (errorList.length > 0) return res.json({ status: "00", data: errorList });
-    processTxn(txnList,barCode,res);
+    processTxn(txnList, barCode, res);
     // res.send("Transaction completed");
 
 }
 
-const processTxn = async (txnList,barCode,res) => {
+const processTxn = async (txnList, barCode, res) => {
     sqlCom = 'INSERT INTO `sale`(`sale_bill_id`, `ism_id`, `sale_num`, `sale_price`, `mem_id`, `client_date`,`qr_code`) VALUES ';
-    const bill_num=await getBillnum();
+    const bill_num = await getBillnum();
     for (let i = 0; i < txnList.length; i++) {
         const colon = i < txnList.length - 1 ? "," : ";";
         let txn = txnList[i];
-        sqlCom +=`('${bill_num}','${txn["ismId"]}','${txn["luckyNumber"]}',${txn["amount"]},'${txn["userId"]}','${txn["date"].substring(0,19)}','${barCode}')${colon}`;
+        sqlCom += `('${bill_num}','${txn["ismId"]}','${txn["luckyNumber"]}',${txn["amount"]},'${txn["userId"]}','${txn["date"].substring(0, 19)}','${barCode}')${colon}`;
     }
-    Db.query(sqlCom,(er,re)=>{
-        if(er){
-            console.log("RESULT SQL: "+er);
-           return res.json({status:"05",desc:er})
-        } 
-        res.json({status:"00",desc:"Transaction completed"})
+    Db.query(sqlCom, (er, re) => {
+        if (er) {
+            console.log("RESULT SQL: " + er);
+            return res.json({ status: "05", desc: er })
+        }
+        res.json({ status: "00", desc: "Transaction completed" })
     })
     console.log("FINAL SQL COMMAND: " + sqlCom);
 
 }
 
-const getBillnum=async() =>{
+const getBillnum = async () => {
     try {
-        const [rows,fields] = await Db2.query(
+        const [rows, fields] = await Db2.query(
             `SELECT MAX(sale_bill_id) as pre_bill FROM sale HAVING MAX(sale_bill_id) IS NOT null`
         );
-    
+
         const numRows = rows.length;
         console.log("numrow: " + numRows);
         if (numRows < 1) {
@@ -74,7 +74,7 @@ const getBillnum=async() =>{
             return next_ref;
         }
     } catch (error) {
-        console.log("Get bill number error: "+error);
+        console.log("Get bill number error: " + error);
     }
 
 }
@@ -115,8 +115,8 @@ const isOverLuckNum = async (txn) => {
     let sqlCom = `SELECT SUM(sale_price) AS recent_sale FROM sale WHERE  ism_id =${ismId} AND sub_cat_id=${subcat}  AND sale_num = ${luckNum}`;
     try {
         const [rows, fields] = await Db2.query(sqlCom);
-        const recentSale = rows[0]["recent_sale"]||0;
-        const saleAmount = parseInt(recentSale)+parseInt(amount)
+        const recentSale = rows[0]["recent_sale"] || 0;
+        const saleAmount = parseInt(recentSale) + parseInt(amount)
         let maxSale = 0;
         console.log("RECENT SALE: " + recentSale);
         console.log("LUCKYNUM SALE: " + luckNum);
