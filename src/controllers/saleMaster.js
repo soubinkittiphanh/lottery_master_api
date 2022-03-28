@@ -114,14 +114,15 @@ const isOverLuckNum = async (txn) => {
     try {
         const [rows, fields] = await Db2.query(sqlCom);
         const recentSale = rows[0]["recent_sale"]
+        const saleAmount = parseInt(recentSale)+parseInt(amount)
         let maxSale = 0;
         console.log("RECENT SALE: " + recentSale);
         console.log("LUCKYNUM SALE: " + luckNum);
-        console.log("RECENT + SALE: " + (recentSale + amount).toString());
+        console.log("RECENT + SALE: " + saleAmount.toString());
         //FIND MAX SALE
         sqlCom = `SELECT ${maxType} FROM salelimit;`;
         maxSale = await checkMaxSale(sqlCom, maxType);
-        if (maxSale < recentSale + amount) return response = { "status": "05", "error": luckNum + " is over maximum" }
+        if (maxSale < saleAmount) return response = { "status": "05", "error": luckNum + " is over maximum" }
     } catch (error) {
         console.log("Error: " + error);
         response = { "status": "05", "error": "server error" + er };
