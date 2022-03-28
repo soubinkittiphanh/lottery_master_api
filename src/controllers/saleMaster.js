@@ -104,7 +104,7 @@ const isOverLuckNum = async (txn) => {
             maxType = "five_digits"
             break;
         case 6:
-            maxType = "four_digits"
+            maxType = "six_digits"
             break;
         default:
             break;
@@ -113,7 +113,7 @@ const isOverLuckNum = async (txn) => {
     let sqlCom = `SELECT SUM(sale_price) AS recent_sale FROM sale WHERE  ism_id =${ismId} AND sub_cat_id=${subcat}  AND sale_num = ${luckNum}`;
     try {
         const [rows, fields] = await Db2.query(sqlCom);
-        const recentSale = rows[0]["recent_sale"]
+        const recentSale = rows[0]["recent_sale"]||0;
         const saleAmount = parseInt(recentSale)+parseInt(amount)
         let maxSale = 0;
         console.log("RECENT SALE: " + recentSale);
