@@ -18,8 +18,9 @@ const sale = async (req, res) => {
     console.log("Subcat: " + txnHeader.subcategory);
     const errorList = [];
     for (el of txnList) {
-        console.log("LEN OF EL: " + el.luckyNumber.length);
-        if (el.luckyNumber.length > 6) return res.json({ status: "01", desc: "INVALID LUCKY NUMBER" });
+        const luckyNumLen=el.luckyNumber.length;
+        console.log("LEN OF EL: " + luckyNumLen);
+        if (luckyNumLen > 6) return res.json({ status: "01", desc: "INVALID LUCKY NUMBER" });
         const responseCode = await isOverLuckNum(el);
         console.log("STATUS: " + responseCode.status);
         if (responseCode.status != "00") {
