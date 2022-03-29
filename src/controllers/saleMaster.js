@@ -26,7 +26,7 @@ const sale = async (req, res) => {
         if (responseCode.status != "00") {
             errorList.push(responseCode);
             console.log("ELEMENT LOOPING...STOP");
-            return res.json({ status: "00", data: errorList });
+            return res.json([{ status: "00", data: errorList }]);
         }
         console.log("ELEMENT LOOPING...");
     }
