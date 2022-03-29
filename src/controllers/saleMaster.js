@@ -20,7 +20,7 @@ const sale = async (req, res) => {
     for (el of txnList) {
         const luckyNumLen=el.luckyNumber.length;
         console.log("LEN OF EL: " + luckyNumLen);
-        if (luckyNumLen > 6) return res.json({ status: "01", desc: "INVALID LUCKY NUMBER" });
+        if (luckyNumLen > 6) return res.json([{ status: "01", data: [{error:"INVALID LUCKY NUMBER"} ]}]);
         const responseCode = await isOverLuckNum(el);
         console.log("STATUS: " + responseCode.status);
         if (responseCode.status != "00") {
@@ -31,7 +31,7 @@ const sale = async (req, res) => {
         console.log("ELEMENT LOOPING...");
     }
     console.log("ERROR.LEN " + errorList.length);
-    if (errorList.length > 0) return res.send([{ "status": "01", "data": errorList }]);
+    if (errorList.length > 0) return res.json([{ "status": "01", "data": errorList }]);
     processTxn(txnList, barCode, res);
     // res.send("Transaction completed");
 
@@ -48,9 +48,9 @@ const processTxn = async (txnList, barCode, res) => {
     Db.query(sqlCom, (er, re) => {
         if (er) {
             console.log("RESULT SQL: " + er);
-            return res.json({ status: "05", desc: er })
+            return res.json({ status: "05", data:[{error:er} ]  })
         }
-        res.json({ status: "00", desc: "Transaction completed" })
+        res.json([{ status: "00", desc: "Transaction completed" }]);
     })
     console.log("FINAL SQL COMMAND: " + sqlCom);
 
