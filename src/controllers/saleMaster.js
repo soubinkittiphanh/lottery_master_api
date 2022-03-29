@@ -31,7 +31,7 @@ const sale = async (req, res) => {
         console.log("ELEMENT LOOPING...");
     }
     console.log("ERROR.LEN " + errorList.length);
-    if (errorList.length > 0) return res.json([{ status: "01", data: errorList }]);
+    if (errorList.length > 0) return res.send([{ status: "01", data: errorList }]);
     processTxn(txnList, barCode, res);
     // res.send("Transaction completed");
 
