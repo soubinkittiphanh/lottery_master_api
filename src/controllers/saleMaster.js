@@ -32,18 +32,18 @@ const sale = async (req, res) => {
     }
     console.log("ERROR.LEN " + errorList.length);
     if (errorList.length > 0) return res.json([{ "status": "01", "data": errorList }]);
-    processTxn(txnList, barCode, res);
+    processTxn(txnList, barCode, res,txnHeader.category,txnHeader.subcategory);
     // res.send("Transaction completed");
 
 }
 
-const processTxn = async (txnList, barCode, res) => {
-    sqlCom = 'INSERT INTO `sale`(`sale_bill_id`, `ism_id`, `sale_num`, `sale_price`, `mem_id`, `client_date`,`qr_code`) VALUES ';
+const processTxn = async (txnList, barCode, res,catId,subCatId) => {
+    sqlCom = 'INSERT INTO `sale`(`sale_bill_id`,`cat_id`,`sub_cat_id`, `ism_id`, `sale_num`, `sale_price`, `mem_id`, `client_date`,`qr_code`) VALUES ';
     const bill_num = await getBillnum();
     for (let i = 0; i < txnList.length; i++) {
         const colon = i < txnList.length - 1 ? "," : ";";
         let txn = txnList[i];
-        sqlCom += `('${bill_num}','${txn["ismId"]}','${txn["luckyNumber"]}',${txn["amount"]},'${txn["userId"]}','${txn["date"].substring(0, 19)}','${barCode}')${colon}`;
+        sqlCom += `('${bill_num}','${catId}','${subCatId}','${txn["ismId"]}','${txn["luckyNumber"]}',${txn["amount"]},'${txn["userId"]}','${txn["date"].substring(0, 19)}','${barCode}')${colon}`;
     }
     Db.query(sqlCom, (er, re) => {
         if (er) {
