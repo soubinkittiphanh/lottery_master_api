@@ -50,6 +50,7 @@ const processTxn = async (txnList, barCode, res) => {
             console.log("RESULT SQL: " + er);
             return res.json({ status: "05", data:[{error:er} ]  })
         }
+        console.log("Transaction inserted");
         res.json([{ status: "00", desc: "Transaction completed" }]);
     })
     console.log("FINAL SQL COMMAND: " + sqlCom);
