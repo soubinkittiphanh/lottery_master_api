@@ -11,7 +11,7 @@ const Sale=require("../controllers/sale");
 const SaleMaster=require("../controllers/saleMaster");
 const Categ=require("../controllers/category");
 const Authen=require("../controllers/signon");
-const hook=require("../middleware")
+const hook=require("../middleware").authen.validateToken;
 
 const user = async (app) => {
   app.get("/user", User.userget);
@@ -80,9 +80,9 @@ const category=async(app)=>{
 const authen=async(app)=>{
   await app.post("/login",Authen.login)
 }
-const validate=async(app)=>{
-  await app.post("/validate_token",hook.authen.validateToken)
-}
+// const validate=async(app)=>{
+//   await app.post("/validate_token",hook.authen.validateToken)
+// }
 
 module.exports = {
   user,
