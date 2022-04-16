@@ -16,10 +16,11 @@ const validateToken=async(req,res,done)=>{
     const token =authorization&&authorization.split(" ")[1];
     console.log("Token: "+token);
     console.log("Secret: "+secret);
-    if (token == null) return res.json({status:"02",desc:"No token"})
+    if (token == null) return res.json("Error: no token found")
     jwt.verify(token,secret,(er,result)=>{
-        if(er) return res.json({status:"02",desc:er})
-        res.send({"status":"00",desc:"Token is valid"})
+        if(er) return res.json("Error: "+er)
+        // res.send({"status":"00",desc:"Token is valid"})
+        console.log("Token is valid");
         done();
 
     })
