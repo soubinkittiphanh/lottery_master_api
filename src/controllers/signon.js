@@ -12,19 +12,17 @@ const login = async (req, res) => {
         if (er) return res.json({ status: "05", desc: er })
         const realPassword = re[0]["mem_pass"];
         const credential = { userId: re[0]["mem_id"], brcCode: re[0]["brc_code"], groupCode: re[0]["group_code"], userName: re[0]["mem_name"], userLname: re[0]["mem_lname"], userTel: re[0]["mem_tel"], }
-        const isAuth=bcrypt.compare(password, realPassword)
-        if(isAuth){
-            // if (err) return res.json({ status: "02", desc: err })
-            // console.log("RESULT PASSWORD COMPARE: " + result);
-            // if (!!result) {
+        try {
+            const isAuth = bcrypt.compare(password, realPassword)
+            if (isAuth) {
                 return res.json(hook.authen.generateToken(credential));
-            // }
+            }
+        } catch (error) {
+            res.json({ status: "01", desc: "invalid password" })
         }
-        res.json({status:"01",desc:"invalid password"})
     })
-
 }
 
-module.exports={
+module.exports = {
     login,
 }
