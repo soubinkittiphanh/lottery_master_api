@@ -4,7 +4,7 @@ const Db = require("../config/dbconn");
 const bcrypt = require("../../custom-bcrypt");
 const hook = require("../middleware");
 const login = async (req, res) => {
-
+    console.log("Login....");
     const { userId, password } = req.body;
     if (!(userId && password)) return res.json({ "status": "01", "desc": "No required data" });
     const sqlCom = `SELECT mem_id,brc_code,group_code,mem_pass,mem_name,mem_lname,mem_tel FROM member WHERE mem_id ='${userId}'`;

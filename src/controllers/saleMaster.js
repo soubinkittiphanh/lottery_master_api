@@ -21,7 +21,7 @@ const sale = async (req, res) => {
         const luckyNumLen=el.luckyNumber.length;
         console.log("LEN OF EL: " + luckyNumLen);
         if (luckyNumLen > 6) return res.json([{ status: "01", data: [{error:"INVALID LUCKY NUMBER"} ]}]);
-        const responseCode = await isOverLuckNum(el);
+        const responseCode = await isOverLuckNum(el,txnHeader);
         console.log("STATUS: " + responseCode.status);
         if (responseCode.status != "00") {
             errorList.push(responseCode);
@@ -81,13 +81,21 @@ const getBillnum = async () => {
 
 }
 
-const isOverLuckNum = async (txn) => {
+const isOverLuckNum = async (txn,txnHeader) => {
     const userId = txn.userId;
     const luckNum = txn.luckyNumber;
     const amount = txn.amount;
-    const category = txn.category;
-    const subcat = txn.subcategory;
-    const ismId = txn.ismId;
+    const category = txnHeader.category;
+    const subcat = txnHeader.subcategory;
+    const ismId = txnHeader.ismId;
+
+    console.log("User id: " + userId);
+    console.log("Header date: " + txnHeader.date);
+    console.log("Ism Id: " + txnHeader.ismId);
+    console.log("Barcode: " + txnHeader.qrCode);
+    console.log("Category: " + txnHeader.category);
+    console.log("Subcat: " + txnHeader.subcategory);
+
     let maxType = '';
     let response = { 'status': "00", "error": "" };
     console.log("ism: " + ismId + " subcat: " + subcat + " category: " + category + " userId: " + userId);
