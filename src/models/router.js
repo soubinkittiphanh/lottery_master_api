@@ -71,7 +71,7 @@ const sale = async (app) => {
   await app.post("/cancel", Sale.reverse);
 };
 const saleMaster = async (app) => {
-  await app.post("/sale_master", SaleMaster.sale);
+  await app.post("/sale_master", hook,SaleMaster.sale);
 
 };
 const category=async(app)=>{
