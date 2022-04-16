@@ -67,8 +67,8 @@ const report = async (app) => {
   await app.get("/topsale", Report.topSaleRep);
 };
 const sale = async (app) => {
-  await app.post("/sale", Sale.sale);
-  await app.post("/cancel", Sale.reverse);
+  await app.post("/sale",hook, Sale.sale);
+  await app.post("/cancel",hook, Sale.reverse);
 };
 const saleMaster = async (app) => {
   await app.post("/sale_master", hook,SaleMaster.sale);
