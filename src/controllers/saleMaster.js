@@ -40,7 +40,7 @@ const sale = async (req, res) => {
 const processTxn = async (txnList, barCode, res,catId,subCatId) => {
     sqlCom = 'INSERT INTO `sale`(`sale_bill_id`,`cat_id`,`sub_cat_id`, `ism_id`, `sale_num`, `sale_price`, `mem_id`, `client_date`,`qr_code`) VALUES ';
     const bill_num = await getBillnum();
-    if(!bill_num)return res.json({status:"04",desc:"Transaction fail: cannot get ticket number"});
+    if(!bill_num)return res.json({status:"04",desc:"Transaction fail: error cannot get ticket number"});
     for (let i = 0; i < txnList.length; i++) {
         const colon = i < txnList.length - 1 ? "," : ";";
         let txn = txnList[i];
