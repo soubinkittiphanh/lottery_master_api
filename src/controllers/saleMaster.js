@@ -51,7 +51,7 @@ const processTxn = async (txnList, barCode, res,catId,subCatId) => {
             console.log("RESULT SQL: " + er);
             return res.json({ status: "05", data:[{error:er} ]  })
         }
-        res.json([{ status: "00", desc: "Transaction completed",ticket_number: bill_num}]);
+        res.json([{ status: "00", desc: "Transaction completed",ticket_number: bill_num.toString()}]);
     })
     console.log("FINAL SQL COMMAND: " + sqlCom);
 
