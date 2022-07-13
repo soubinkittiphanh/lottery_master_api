@@ -38,6 +38,7 @@ const sale = async (req, res) => {
 }
 
 const processTxn = async (txnList, barCode, res,catId,subCatId) => {
+    console.log("THIS IS CAT ID BEFORE PROCESS: "+catId);
     sqlCom = 'INSERT INTO `sale`(`sale_bill_id`,`cat_id`,`sub_cat_id`, `ism_id`, `sale_num`, `sale_price`, `mem_id`, `client_date`,`qr_code`) VALUES ';
     const bill_num = await getBillnum();
     if(!bill_num)return res.json({status:"04",desc:"Transaction fail: error cannot get ticket number"});
