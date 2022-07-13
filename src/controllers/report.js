@@ -24,7 +24,7 @@ const winrep = async (req, res) => {
   console.log("ID" + r_mem_id);
   console.log("Admin" + r_admin);
   console.log("Date" + r_date);
-  await db.query(sql, (er, result) => {
+   db.query(sql, (er, result) => {
     if (er) {
       res.send(er);
     } else {
@@ -33,7 +33,7 @@ const winrep = async (req, res) => {
   });
 };
 const topSaleRep=async(req,res)=>{
-  await db.query("SELECT t.* FROM (SELECT s.sale_num as luck_num,SUM(s.sale_price) as total_sale FROM sale s WHERE s.ism_id=(SELECT MAX(i.ism_ref) FROM installment i) AND s.is_cancel=0 GROUP BY s.sale_num) t ORDER BY t.total_sale DESC LIMIT 10;",(er,re)=>{
+   db.query("SELECT t.* FROM (SELECT s.sale_num as luck_num,SUM(s.sale_price) as total_sale FROM sale s WHERE s.ism_id=(SELECT MAX(i.ism_ref) FROM installment i) AND s.is_cancel=0 GROUP BY s.sale_num) t ORDER BY t.total_sale DESC LIMIT 10;",(er,re)=>{
     if(er)return res.send("Error: "+er);
     res.send(re);
   })
@@ -47,7 +47,8 @@ const salerep = async (req, res) => {
   console.log("ADMIN: " + r_mem_id);
   console.log("ADMIN MASTER: " + p_master);
   //SUBSTRING(s.sale_bill_id, -6, 6)
-  let sql = `SELECT s.is_cancel As is_cancel, s.sale_bill_id AS sale_bill_id,s.ism_id AS ism_id,s.mem_id AS mem_id,s.date AS date,s.sale_num AS sale_num,s.sale_price AS sale_price,i.ism_result FROM installment i 
+  let sql = `SELECT s.is_cancel As is_cancel, s.sale_bill_id AS sale_bill_id,s.ism_id AS ism_id,s.mem_id AS mem_id,s.date AS date,s.sale_num AS sale_num,s.sale_price AS sale_price,i.ism_result 
+  FROM installment i 
   RIGHT JOIN sale s ON s.ism_id=i.ism_ref
   WHERE i.ism_date ="${r_date}" and s.mem_id="${r_mem_id}" ORDER BY s.mem_id`;
 
@@ -65,7 +66,7 @@ const salerep = async (req, res) => {
   }
 
   console.log(r_date);
-  await db.query(sql, (er, result) => {
+   db.query(sql, (er, result) => {
     if (er) {
       res.send(er);
     } else {
@@ -81,7 +82,7 @@ const bonusrep = async (req, res) => {
   console.log("//::::::::::::::BONUS CHECK::::::::::::::");
   console.log("======UID=====" + uid);
   const sql = `SELECT FLOOR(SUM(s.sale_price)*${percent}/100) AS sale  FROM sale s WHERE s.ism_id = (SELECT MAX(i.ism_ref) FROM installment i) AND s.is_cancel=0 AND s.mem_id='${uid}'`;
-  await db.query(sql, (er, result) => {
+   db.query(sql, (er, result) => {
     if (er) {
       console.log("======UID=====ERROR");
       console.log(er);
@@ -113,7 +114,7 @@ LEFT JOIN
  
 GROUP BY m.brc_code
   `;
-  await db.query(sql, (err, result) => {
+   db.query(sql, (err, result) => {
     if (err) {
       console.log(err);
       res.send("ເກີດຂໍ້ຜິດພາດທາງດ້ານເຊີເວີ: " + err);
