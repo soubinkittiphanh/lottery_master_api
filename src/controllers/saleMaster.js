@@ -123,7 +123,7 @@ const isOverLuckNum = async (txn,txnHeader) => {
             break;
     }
     console.log("SWITCHING: " + maxType);
-    let sqlCom = `SELECT SUM(sale_price) AS recent_sale FROM sale WHERE  ism_id =${ismId} AND sub_cat_id=${maxType}  AND sale_num = ${luckNum}`;
+    let sqlCom = `SELECT SUM(sale_price) AS recent_sale FROM sale WHERE  ism_id =${ismId} AND sub_cat_id=${subcat}  AND sale_num = ${luckNum}`;
     try {
         const [rows, fields] = await Db2.query(sqlCom);
         const recentSale = rows[0]["recent_sale"] || 0;
