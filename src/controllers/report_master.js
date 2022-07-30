@@ -19,7 +19,9 @@ const saleReport=async(req,res)=>{
     })
 }
 const winReport=async(req, res)=>{
+    console.log("Master win report is called");
     const {memId,fromIsmDate}=req.query;
+    console.log("Master win report is called with memId "+memId+" fromIsmDate "+fromIsmDate);
     const sqlCmd=`SELECT s.* FROM sale s 
     LEFT JOIN installment i ON i.ism_ref=s.ism_id
     WHERE s.ism_id IN (SELECT ism_id FROM installment WHERE ism_date >='${fromIsmDate} 00:00:00') 
@@ -32,7 +34,11 @@ const winReport=async(req, res)=>{
     );`;
     const sqlCmd2=`CALL GetWinTransaction;`
     db.query(sqlCmd2,(er,re)=>{
-        if(er) return 'Error: database error'+er;
+        if(er) {
+            console.log("Error: "+er);
+            return 'Error: database error'+er;
+        }
+        console.log("Re: "+re);
         res.send(re)
     })
 }
