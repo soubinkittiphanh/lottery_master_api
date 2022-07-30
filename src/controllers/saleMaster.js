@@ -134,7 +134,7 @@ const isOverLuckNum = async (txn,txnHeader) => {
         console.log("LUCKYNUM SALE: " + luckNum);
         console.log("RECENT + SALE: " + saleAmount.toString());
         //FIND MAX SALE
-        sqlCom = `SELECT ${maxType} FROM salelimit WHERE brc_code=(SELECT IFNULL(brc_code,'DEFUALT') FROM member WHERE member_id='${userId}');`;
+        sqlCom = `SELECT ${maxType} FROM salelimit WHERE brc_code=(SELECT IFNULL(brc_code,'DEFUALT') FROM member WHERE mem_id='${userId}');`;
         maxSale = await checkMaxSale(sqlCom, maxType);
         if (maxSale < saleAmount) return response = { "status": "05", "error": luckNum + " is over maximum "+ " ວ່າງ "+ (maxSale-recentSale) }
     } catch (error) {
