@@ -11,6 +11,7 @@ const Sale=require("../controllers/sale");
 const SaleMaster=require("../controllers/saleMaster");
 const Categ=require("../controllers/category");
 const Authen=require("../controllers/signon");
+const MasterReport=require("../controllers/report_master");
 const hook=require("../middleware").authen.validateToken;
 
 const user = async (app) => {
@@ -61,7 +62,7 @@ const payRate = async (app) => {
 };
 const report = async (app) => {
   await app.get("/salereport", Report.salerep);
-  await app.get("/winreport", Report.winrep);
+  await app.get("/winreport", MasterReport.winReport);
   await app.post("/bonuschk", Report.bonusrep);
   await app.get("/brcreport", Report.branchrep);
   await app.get("/topsale", Report.topSaleRep);

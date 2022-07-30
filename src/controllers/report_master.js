@@ -18,5 +18,23 @@ const saleReport=async(req,res)=>{
         res.send(re);
     })
 }
+const winReport=async(req, res)=>{
+    const {memId,fromIsmDate}=req.query;
+    const sqlCmd=`SELECT s.* FROM sale s 
+    LEFT JOIN installment i ON i.ism_ref=s.ism_id
+    WHERE s.ism_id IN (SELECT ism_id FROM installment WHERE ism_date >='${fromIsmDate} 00:00:00') 
+    AND ( IF(s.sub_cat_id=10,s.sale_num=i.ism_result_primary,s.sale_num=i.ism_result_secondary)
+    OR IF(s.sub_cat_id=10,s.sale_num=SUBSTRING(i.ism_result_primary,-5,5),s.sale_num=SUBSTRING(i.ism_result_secondary, -5, 5))  
+    OR IF(s.sub_cat_id=10,s.sale_num=SUBSTRING(i.ism_result_primary,-4,4),s.sale_num=SUBSTRING(i.ism_result_secondary, -4, 4))  
+    OR IF(s.sub_cat_id=10,s.sale_num=SUBSTRING(i.ism_result_primary,-3,3),s.sale_num=SUBSTRING(i.ism_result_secondary, -3, 3))  
+    OR IF(s.sub_cat_id=10,s.sale_num=SUBSTRING(i.ism_result_primary,-2,2),s.sale_num=SUBSTRING(i.ism_result_secondary, -2, 2))
+    OR IF(s.sub_cat_id=10,s.sale_num=i.ism_result_primary_ou,s.sale_num=i.ism_result_secondary_ou)
+    );`;
+    const sqlCmd2=`CALL GetWinTransaction;`
+    db.query(sqlCmd2,(er,re)=>{
+        if(er) return 'Error: database error'+er;
+        res.send(re)
+    })
+}
 
-module.exports={saleReport};
+module.exports={saleReport,winReport};
