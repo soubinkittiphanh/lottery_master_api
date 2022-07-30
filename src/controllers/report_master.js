@@ -39,7 +39,7 @@ const winReport=async(req, res)=>{
             return 'Error: database error'+er;
         }
         console.log("Re: "+re[0]);
-        res.send(re)
+        res.send(re[0])
     })
 }
 
