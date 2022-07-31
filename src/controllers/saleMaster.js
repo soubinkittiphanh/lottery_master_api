@@ -1,5 +1,6 @@
 
 const res = require("express/lib/response");
+const { db } = require("../config");
 const Db = require("../config/dbconn");
 const Db2 = require("../config/dbconnPromise");
 const sale = async (req, res) => {
@@ -133,8 +134,8 @@ const isOverLuckNum = async (txn,txnHeader) => {
         console.log("RECENT SALE: " + recentSale);
         console.log("LUCKYNUM SALE: " + luckNum);
         console.log("RECENT + SALE: " + saleAmount.toString());
-        //FIND MAX SALE
-        sqlCom = `SELECT ${maxType} FROM salelimit WHERE brc_code=(SELECT IFNULL(brc_code,'DEFUALT') FROM member WHERE mem_id='${userId}');`;
+        //FIND MAX SALE IN SALELIMIT TABLE
+        sqlCom = `SELECT ${maxType} FROM salelimit WHERE brc_code=IFNULL((SELECT brc_code FROM member WHERE mem_id='${userId}'),'DEFUALT');`;
         console.log("=> SQL SALE LIM: "+sqlCom);
         maxSale = await checkMaxSale(sqlCom, maxType);
         if (maxSale < saleAmount) return response = { "status": "05", "error": luckNum + " is over maximum "+ " ວ່າງ "+ (maxSale-recentSale) }
@@ -153,6 +154,7 @@ const subCatCheck = (subcat) => {
 }
 
 const checkMaxSale = async (sqlCom, sqlFieldName) => {
+    console.log("Field name: "+sqlFieldName);
     let maxSale = 0;
     try {
         const [rows, fields] = await Db2.query(sqlCom);
@@ -161,7 +163,14 @@ const checkMaxSale = async (sqlCom, sqlFieldName) => {
         return maxSale;
     } catch (error) {
         console.log("Error: " + error);
-        return maxSale;
+        return Db.query("SELECT sqlFieldName FROM salelimit WHERE brc_code='DEFUALT'",(er,re)=>{
+            if (er){
+                console.log("COULD NOT GET SALE LIMIT: "+er);
+                return maxSale;
+            }
+            return re[0][sqlFieldName];
+        })
+        // return maxSale;
     }
 }
 
