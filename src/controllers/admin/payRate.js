@@ -2,7 +2,7 @@ const db = require("../../config/dbconn");
 
 const getPayRate = async (req, res) => {
   console.log("//::::::::::::::PAYRATE FETCH::::::::::::::");
-  await db.query("SELECT * FROM payrate", (err, result) => {
+   db.query("SELECT * FROM payrate", (err, result) => {
     if (err) {
       res.send(err);
     } else {
@@ -20,7 +20,7 @@ const updatePayRate = async (req, res) => {
   const five = req.body.five;
   const six = req.body.six;
   console.log(id);
-  await db.query(
+   db.query(
     "UPDATE `payrate` SET `pay_two`=?,`pay_three`=?,`pay_four`=?,`pay_five`=?,`pay_six`=? WHERE `id`=?",
     [two, three, four, five, six, id],
     (er, result) => {

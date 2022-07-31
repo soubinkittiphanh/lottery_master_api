@@ -21,7 +21,7 @@ const createMember = async (req, res) => {
   console.log(tel);
 
   console.log("::::::::::::::LICENSE CREATE USER::::::::::::::");
-  await db.query(
+   db.query(
     "SELECT app_max,COUNT(mem_id) AS mem_id FROM tbl_license, member WHERE app_name='member'",
     (err, result) => {
       if (err) {
@@ -108,7 +108,7 @@ const updateMember = async (req, res) => {
   const group_code = req.body.group_code;
   console.log("up id" + id);
   console.log("up id" + name);
-  await db.query(
+   db.query(
     "UPDATE `member` SET `mem_id`=?,`brc_code`=?,`mem_name`=?,`mem_lname`=?,`mem_village`=?,`mem_dist`=?,`mem_pro`=?,`active`=?,`admin`=?,`mem_rec`=?,`mem_tel`=?,`com_sale`=?,`com_win`=?,`group_code`=? WHERE `id`=?",
     [
       logid,
@@ -143,7 +143,7 @@ const resetPassword = async (req, res) => {
   const id = req.body.id;
   const logpass = bcrypt.hash(req.body.logpass); //req.body.logpass;
   console.log("up id" + id);
-  await db.query(
+   db.query(
     "UPDATE `member` SET `mem_pass`=? WHERE `id`=?",
     [logpass, id],
     (err, result) => {
@@ -160,7 +160,7 @@ const resetPassword = async (req, res) => {
 //::::::::::::::GEN MEMID::::::::::::::
 const genId = async (req, res) => {
   console.log("//::::::::::::::GEN MEMID::::::::::::::");
-  await db.query(
+   db.query(
     "SELECT MAX(mem_id) AS mem_id FROM `member` HAVING MAX(mem_id) IS NOT null ",
     (err, result) => {
       if (err) {
@@ -181,7 +181,7 @@ const getMemberById = async (req, res) => {
   console.log("//::::::::::::::FETCH MEMBER ID::::::::::::::");
   console.log("USER ID: " + param_id);
   const sql_query = " SELECT * FROM `member` WHERE id = " + param_id;
-  await db.query(sql_query, (err, result) => {
+   db.query(sql_query, (err, result) => {
     if (err) {
       console.log(err);
       res.send("ເກີດຂໍ້ຜິດພາດທາງດ້ານເຊີເວີ: " + err);
@@ -202,7 +202,7 @@ const getMember = async (req, res) => {
     sql =
       "SELECT m.*, SUM(s.sale_price ) AS total,win.sale_num,win.sale_price,win.win_amount FROM member m LEFT JOIN sale s ON m.mem_id=s.mem_id AND s.is_cancel=0 AND s.ism_id=(SELECT MAX(i.ism_ref) FROM installment i) LEFT JOIN (SELECT s.*,i.ism_result,SUM(s.sale_price*(SELECT IF(LENGTH(s.sale_num)=2,pay_two,IF(LENGTH(s.sale_num)=3,pay_three,IF(LENGTH(s.sale_num)=4,pay_four,IF(LENGTH(s.sale_num)=5,pay_five,pay_six)))) FROM payrate) /1000) AS win_amount FROM installment i RIGHT JOIN sale s ON s.ism_id=i.ism_ref AND s.is_cancel=0 WHERE i.ism_date =(SELECT MAX(ism_date) FROM installment) AND (s.sale_num = SUBSTRING(i.ism_result, -6, 6) OR s.sale_num = SUBSTRING(i.ism_result, -5, 5) OR s.sale_num = SUBSTRING(i.ism_result, -4, 4) OR s.sale_num = SUBSTRING(i.ism_result, -3, 3) OR s.sale_num = SUBSTRING(i.ism_result, -2, 2)) GROUP BY s.mem_id  ORDER BY s.id DESC) AS win ON win.mem_id=m.mem_id GROUP BY m.id ORDER BY m.brc_code,m.mem_name";
   }
-  await db.query(sql, (err, result) => {
+   db.query(sql, (err, result) => {
     if (err) {
       console.log(err);
       res.send("ເກີດຂໍ້ຜິດພາດທາງດ້ານເຊີເວີ: " + err);

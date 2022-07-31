@@ -20,7 +20,7 @@ const createGroup = async (req, res) => {
   // console.log("DATA abbr:" + abbr + " name:" + name + " desc:" + desc);
   const sql =
     "INSERT IGNORE `tbl_group_permission`(`group_code`, `group_name`, `group_desc`, `m_home`, `m_category`, `m_branch`, `m_limited_price`, `m_pay_rate`, `m_sale`, `m_re_sale`, `m_re_win`, `m_list_member`, `m_add_member`, `m_master`,`m_group`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-  await db.query(
+   db.query(
     sql,
     [
       g_code,
@@ -71,7 +71,7 @@ const updateGroup=async (req, res) => {
     // console.log("DATA abbr:" + abbr + " name:" + name + " desc:" + desc);
     const sql =
       "UPDATE `tbl_group_permission` set `group_code`=?, `group_name`=?, `group_desc`=?, `m_home`=?, `m_category`=?, `m_branch`=?, `m_limited_price`=?, `m_pay_rate`=?, `m_sale`=?, `m_re_sale`=?, `m_re_win`=?, `m_list_member`=?, `m_add_member`=?, `m_master`=?,`m_group`=? WHERE `id`=? ";
-    await db.query(
+     db.query(
       sql,
       [
         g_code,
@@ -105,7 +105,7 @@ const updateGroup=async (req, res) => {
 
   const getGroup=async (req, res) => {
     console.log("//::::::::::::::GROUP FETCH::::::::::::::");
-    await db.query("SELECT * FROM `tbl_group_permission`", (er, result) => {
+     db.query("SELECT * FROM `tbl_group_permission`", (er, result) => {
       if (er) {
         console.log("//::::::::::::::GROUP FETCH ERROR::::::::::::::");
         return res.send(er);
@@ -117,7 +117,7 @@ const updateGroup=async (req, res) => {
   };
   const getGroupById=async(req, res) => {
     console.log("//::::::::::::::GROUP FETCH::::::::::::::");
-    await db.query(
+     db.query(
       "SELECT `group_code`,`id` FROM `tbl_group_permission`",
       (er, result) => {
         if (er) {

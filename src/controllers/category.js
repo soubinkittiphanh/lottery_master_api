@@ -3,7 +3,7 @@ const db = require("../config/dbconn");
 const fetchCategory=async(req,res)=>{
     console.log("::::::::::::::FETCH CATEGORY::::::::::::::");
     const sqlCom=`SELECT * FROM t_category`
-    await db.query(sqlCom,(er,re)=>{
+    db.query(sqlCom,(er,re)=>{
         if(er) return res.send("Error: "+er);
         res.send(re);
         console.log("::::::::::::::FETCH CATEGORY RESPONSE::::::::::::::");

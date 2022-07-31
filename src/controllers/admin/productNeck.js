@@ -5,7 +5,7 @@ const getProductNeck = async (req, res) => {
   const sqlComConditn=req.query.brc_id?` where brc_code ='${req.query.brc_id}'`:'';
   const sqlCom=`SELECT * FROM salelimit ${sqlComConditn}`;
   console.log("sql "+sqlCom);
-  await db.query(sqlCom, (err, result) => {
+   db.query(sqlCom, (err, result) => {
     if (err) {
       console.log('Error');
       res.send(err);
@@ -34,7 +34,7 @@ const updateProductNeck = async (req, res) => {
   const six = req.body.six;
   const brc_id = req.body.brc_id;
   console.log(id);
-  await db.query(`SELECT * FROM salelimit where brc_code='${brc_id}'`,(er,re)=>{
+   db.query(`SELECT * FROM salelimit where brc_code='${brc_id}'`,(er,re)=>{
     if(er)return res.send("Error: "+er)
     if(re.length==0){
       db.query(`INSERT INTO salelimit(brc_code, two_digits, three_digits, four_digits, five_digits, six_digits)VALUES(
@@ -62,7 +62,7 @@ const updateProductNeck = async (req, res) => {
 };
 const cancelProductNeck=async(req,res)=>{
   if(req.body.brc_code=='DEFAULT') return res.send("ບໍ່ສາມາດດຳເນີນການໄດ້ ເນື່ອງຈາກ ລາຍການນີ້ເປັນລາຍການຫລັກ");
-  await db.query(`DELETE FROM salelimit WHERE brc_code ='${req.body.brc_code}'`,(er,re)=>{
+   db.query(`DELETE FROM salelimit WHERE brc_code ='${req.body.brc_code}'`,(er,re)=>{
     if(er) return res.send("Error: "+er)
     res.send("Transaction completed");
   });
@@ -76,7 +76,7 @@ const createProductNeck=async(req,res)=>{
   const five = body.five;
   const six = body.six;
   const brc_id = body.brc_id;
-  await db.query(`INSERT INTO salelimit(brc_code, two_digits, three_digits, four_digits, five_digits, six_digits)VALUES(
+   db.query(`INSERT INTO salelimit(brc_code, two_digits, three_digits, four_digits, five_digits, six_digits)VALUES(
     ${brc_id},${two},${three},${four},${five},${six}
   )`,(er,re)=>{
     if(er) return res.send("Error: "+er)

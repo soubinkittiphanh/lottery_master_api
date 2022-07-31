@@ -171,7 +171,7 @@ const checkMaxSale = async (sqlCom, sqlFieldName) => {
             }
             let maxsaleFetched=re[0][sqlFieldName];
             console.log("UNDER AMOUNT FROM LIMIT: "+maxsaleFetched);
-            return re[0][sqlFieldName];
+            return maxsaleFetched;
         })
         // return maxSale;
     }

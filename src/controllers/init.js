@@ -4,7 +4,7 @@ const home = (req, reply) => {
   reply.send("Hello we are waiting for your request :-)");
 };
 const dbuser = async (req, reply) => {
-  await db.query("SELECT * FROM employee", (err, result) => {
+  db.query("SELECT * FROM employee", (err, result) => {
     if (err) {
       reply.send("ERROR " + err);
     } else {

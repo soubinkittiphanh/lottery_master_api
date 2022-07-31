@@ -11,7 +11,7 @@ const createBranch=async(req, res) => {
       "INSERT IGNORE `branch`(`co_code`, `co_name`, `co_gname`,`co_comm`) VALUES (?,?,?,?)";
   
     console.log("::::::::::::::LICENSE CREATE BRC::::::::::::::");
-    await db.query(
+     db.query(
       "SELECT app_max,COUNT(co_code) AS co_code FROM tbl_license, branch WHERE app_name='branch'",
       (err, result) => {
         if (err) {
@@ -72,7 +72,7 @@ const createBranch=async(req, res) => {
     );
     const sql =
       "UPDATE `branch` SET `co_code`=?, `co_name`=?, `co_gname`=?,`co_comm`=? WHERE `id`=? ";
-    await db.query(sql, [abbr, name, desc,comm, id], (err, reslt) => {
+     db.query(sql, [abbr, name, desc,comm, id], (err, reslt) => {
       if (err) {
         res.send("ເກີດຂໍ້ຜິດພາດ: " + err);
       } else {
