@@ -135,7 +135,7 @@ const isOverLuckNum = async (txn,txnHeader) => {
         console.log("LUCKYNUM SALE: " + luckNum);
         console.log("RECENT + SALE: " + saleAmount.toString());
         //FIND MAX SALE IN SALELIMIT TABLE
-        sqlCom = `SELECT ${maxType} FROM salelimit WHERE brc_code=IFNULL((SELECT brc_code FROM member WHERE mem_id='${userId}'),'DEFUALT');`;
+        sqlCom = `SELECT ${maxType} FROM salelimit WHERE brc_code=IFNULL((SELECT brc_code FROM member WHERE mem_id='${userId}'),'DEFAULT');`;
         console.log("=> SQL SALE LIM: "+sqlCom);
         maxSale = await checkMaxSale(sqlCom, maxType);
         if (maxSale < saleAmount) return response = { "status": "05", "error": luckNum + " is over maximum "+ " ວ່າງ "+ (maxSale-recentSale) }
@@ -163,7 +163,7 @@ const checkMaxSale = async (sqlCom, sqlFieldName) => {
         return maxSale;
     } catch (error) {
         console.log("Error: " + error);
-        return Db.query(`SELECT ${sqlFieldName} FROM salelimit WHERE brc_code='DEFUALT'`,(er,re)=>{
+        return Db.query(`SELECT ${sqlFieldName} FROM salelimit WHERE brc_code='DEFAULT'`,(er,re)=>{
             if (er){
                 console.log("COULD NOT GET SALE LIMIT: "+er);
                 return maxSale;
