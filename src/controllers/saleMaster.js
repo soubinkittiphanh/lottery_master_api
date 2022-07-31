@@ -19,10 +19,10 @@ const sale = async (req, res) => {
     console.log("Subcat: " + txnHeader.subcategory);
     const errorList = [];
     for (el of txnList) {
-        const luckyNumLen=el.luckyNumber.length;
+        const luckyNumLen = el.luckyNumber.length;
         console.log("LEN OF EL: " + luckyNumLen);
-        if (luckyNumLen > 6) return res.json([{ status: "01", data: [{error:"INVALID LUCKY NUMBER"} ]}]);
-        const responseCode = await isOverLuckNum(el,txnHeader);
+        if (luckyNumLen > 6) return res.json([{ status: "01", data: [{ error: "INVALID LUCKY NUMBER" }] }]);
+        const responseCode = await isOverLuckNum(el, txnHeader);
         console.log("STATUS: " + responseCode.status);
         if (responseCode.status != "00") {
             errorList.push(responseCode);
@@ -33,16 +33,16 @@ const sale = async (req, res) => {
     }
     console.log("ERROR.LEN " + errorList.length);
     if (errorList.length > 0) return res.json([{ "status": "01", "data": errorList }]);
-    processTxn(txnList, barCode, res,txnHeader.category,txnHeader.subcategory);
+    processTxn(txnList, barCode, res, txnHeader.category, txnHeader.subcategory);
     // res.send("Transaction completed");
 
 }
 
-const processTxn = async (txnList, barCode, res,catId,subCatId) => {
-    console.log("THIS IS CAT ID BEFORE PROCESS: "+catId);
+const processTxn = async (txnList, barCode, res, catId, subCatId) => {
+    console.log("THIS IS CAT ID BEFORE PROCESS: " + catId);
     sqlCom = 'INSERT INTO `sale`(`sale_bill_id`,`cat_id`,`sub_cat_id`, `ism_id`, `sale_num`, `sale_price`, `mem_id`, `client_date`,`qr_code`) VALUES ';
     const bill_num = await getBillnum();
-    if(!bill_num)return res.json({status:"04",desc:"Transaction fail: error cannot get ticket number"});
+    if (!bill_num) return res.json({ status: "04", desc: "Transaction fail: error cannot get ticket number" });
     for (let i = 0; i < txnList.length; i++) {
         const colon = i < txnList.length - 1 ? "," : ";";
         let txn = txnList[i];
@@ -51,9 +51,9 @@ const processTxn = async (txnList, barCode, res,catId,subCatId) => {
     Db.query(sqlCom, (er, re) => {
         if (er) {
             console.log("RESULT SQL: " + er);
-            return res.json({ status: "05", data:[{error:er} ]  })
+            return res.json({ status: "05", data: [{ error: er }] })
         }
-        res.json([{ status: "00", desc: "Transaction completed",ticket_number: bill_num.toString()}]);
+        res.json([{ status: "00", desc: "Transaction completed", ticket_number: bill_num.toString() }]);
     })
     console.log("FINAL SQL COMMAND: " + sqlCom);
 
@@ -83,7 +83,7 @@ const getBillnum = async () => {
 
 }
 
-const isOverLuckNum = async (txn,txnHeader) => {
+const isOverLuckNum = async (txn, txnHeader) => {
     const userId = txn.userId;
     const luckNum = txn.luckyNumber;
     const amount = txn.amount;
@@ -125,7 +125,7 @@ const isOverLuckNum = async (txn,txnHeader) => {
     }
     console.log("SWITCHING: " + maxType);
     let sqlCom = `SELECT SUM(sale_price) AS recent_sale FROM sale WHERE  ism_id =${ismId} AND sub_cat_id=${subcat}  AND sale_num = '${luckNum}'`;
-    console.log("SQL: "+sqlCom);
+    console.log("SQL: " + sqlCom);
     try {
         const [rows, fields] = await Db2.query(sqlCom);
         const recentSale = rows[0]["recent_sale"] || 0;
@@ -136,10 +136,10 @@ const isOverLuckNum = async (txn,txnHeader) => {
         console.log("RECENT + SALE: " + saleAmount.toString());
         //FIND MAX SALE IN SALELIMIT TABLE
         sqlCom = `SELECT ${maxType} FROM salelimit WHERE brc_code=IFNULL((SELECT brc_code FROM member WHERE mem_id='${userId}'),'DEFAULT');`;
-        console.log("=> SQL SALE LIM: "+sqlCom);
+        console.log("=> SQL SALE LIM: " + sqlCom);
         maxSale = await checkMaxSale(sqlCom, maxType);
-        console.log("MAX SALE LIMIT: "+maxSale);
-        if (maxSale < saleAmount) return response = { "status": "05", "error": luckNum + " is over maximum "+ " ວ່າງ "+ (maxSale-recentSale) }
+        console.log("MAX SALE LIMIT: " + maxSale);
+        if (maxSale < saleAmount) return response = { "status": "05", "error": luckNum + " is over maximum " + " ວ່າງ " + (maxSale - recentSale) }
     } catch (error) {
         console.log("Error: " + error);
         response = { "status": "05", "error": "server error" + er };
@@ -150,12 +150,12 @@ const isOverLuckNum = async (txn,txnHeader) => {
     return response;
 }
 const subCatCheck = (subcat) => {
-    console.log("=> SUB-CAT: "+subcat);
+    console.log("=> SUB-CAT: " + subcat);
     return subcat.includes("o") ? "over" : "under";
 }
 
 const checkMaxSale = async (sqlCom, sqlFieldName) => {
-    console.log("Field name: "+sqlFieldName);
+    console.log("Field name: " + sqlFieldName);
     let maxSale = 0;
     try {
         const [rows, fields] = await Db2.query(sqlCom);
@@ -163,17 +163,18 @@ const checkMaxSale = async (sqlCom, sqlFieldName) => {
         console.log("MAX SALE: " + maxSale);
         return maxSale;
     } catch (error) {
-        console.log("Error: " + error);
-        Db.query(`SELECT ${sqlFieldName} FROM salelimit WHERE brc_code='DEFAULT'`,(er,re)=>{
-            if (er){
-                console.log("COULD NOT GET SALE LIMIT: "+er);
-                return maxSale;
-            }
-            let maxsaleFetched=re[0][sqlFieldName];
-            console.log("UNDER AMOUNT FROM LIMIT: "+maxsaleFetched);
-            return maxsaleFetched;
-        })
-        // return maxSale;
+        console.log("There is no record in salelimit with user's branch_code");
+        try {
+            const [rows, fields] = await Db2.query(`SELECT ${sqlFieldName} FROM salelimit WHERE brc_code='DEFAULT'`);
+            maxSale = rows[0][sqlFieldName];
+            console.log("MAX SALE: " + maxSale);
+            return maxSale;
+        } catch (error) {
+            console.log("Can not fetch salelimit with DEFAULT key record "+error);
+            return maxSale;
+        }
+
+
     }
 }
 
