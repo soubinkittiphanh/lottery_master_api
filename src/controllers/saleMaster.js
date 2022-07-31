@@ -164,7 +164,7 @@ const checkMaxSale = async (sqlCom, sqlFieldName) => {
         return maxSale;
     } catch (error) {
         console.log("Error: " + error);
-        return Db.query(`SELECT ${sqlFieldName} FROM salelimit WHERE brc_code='DEFAULT'`,(er,re)=>{
+        Db.query(`SELECT ${sqlFieldName} FROM salelimit WHERE brc_code='DEFAULT'`,(er,re)=>{
             if (er){
                 console.log("COULD NOT GET SALE LIMIT: "+er);
                 return maxSale;
