@@ -135,7 +135,7 @@ const isOverLuckNum = async (txn, txnHeader) => {
         console.log("LUCKYNUM SALE: " + luckNum);
         console.log("RECENT + SALE: " + saleAmount.toString());
         //FIND MAX SALE IN SALELIMIT TABLE
-        sqlCom = `SELECT ${maxType} FROM salelimit WHERE brc_code=IFNULL((SELECT brc_code FROM member WHERE mem_id='${userId}'),'DEFAULT');`;
+        sqlCom = `SELECT ${maxType} FROM salelimit WHERE cat_id='${category}' AND brc_code=IFNULL((SELECT brc_code FROM member WHERE mem_id='${userId}'),'DEFAULT');`;
         console.log("=> SQL SALE LIM: " + sqlCom);
         maxSale = await checkMaxSale(sqlCom, maxType);
         console.log("MAX SALE LIMIT: " + maxSale);
