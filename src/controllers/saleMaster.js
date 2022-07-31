@@ -151,7 +151,7 @@ const isOverLuckNum = async (txn, txnHeader) => {
 }
 const subCatCheck = (subcat) => {
     console.log("=> SUB-CAT: " + subcat);
-    return subcat.includes("o") ? "over" : "under";
+    return subcat.includes("O") ? "over" : "under";
 }
 
 const checkMaxSale = async (sqlCom, sqlFieldName) => {
