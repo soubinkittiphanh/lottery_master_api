@@ -27,6 +27,7 @@ const updatePayRate = async (req, res) => {
     [two, three, four, five, six, id,over,under],
     (er, result) => {
       if (er) {
+        console.log("Error while update data: "+er);
         res.send("ມີຂໍ້ຜິດພາດທາງດ້ານເຊີເວີ!");
       } else {
         res.send("ອັບເດດຂໍ້ມູນຮຽບຮ້ອຍ");
