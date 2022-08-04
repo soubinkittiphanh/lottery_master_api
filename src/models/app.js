@@ -21,6 +21,7 @@ const buildApp=async(option={})=>{
     Router.category(app);
     Router.saleMaster(app);
     // Router.validate(app);
+    Router.category(app);
     Router.authen(app);
     return app;
 }
