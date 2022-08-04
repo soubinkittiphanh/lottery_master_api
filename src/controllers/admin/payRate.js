@@ -19,10 +19,12 @@ const updatePayRate = async (req, res) => {
   const four = req.body.four;
   const five = req.body.five;
   const six = req.body.six;
+  const over = req.body.over;
+  const under = req.body.under;
   console.log(id);
    db.query(
-    "UPDATE `payrate` SET `pay_two`=?,`pay_three`=?,`pay_four`=?,`pay_five`=?,`pay_six`=? WHERE `id`=?",
-    [two, three, four, five, six, id],
+    "UPDATE `payrate` SET `pay_two`=?,`pay_three`=?,`pay_four`=?,`pay_five`=?,`pay_six`=?,lim_over,lim_under WHERE `id`=?",
+    [two, three, four, five, six, id,over,under],
     (er, result) => {
       if (er) {
         res.send("ມີຂໍ້ຜິດພາດທາງດ້ານເຊີເວີ!");
