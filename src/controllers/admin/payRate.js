@@ -23,8 +23,8 @@ const updatePayRate = async (req, res) => {
   const under = req.body.under;
   console.log(id);
    db.query(
-    "UPDATE `payrate` SET `pay_two`=?,`pay_three`=?,`pay_four`=?,`pay_five`=?,`pay_six`=?,lim_over,lim_under WHERE `id`=?",
-    [two, three, four, five, six, id,over,under],
+    "UPDATE `payrate` SET `pay_two`=?,`pay_three`=?,`pay_four`=?,`pay_five`=?,`pay_six`=?,`lim_over`=?,`lim_under`=? WHERE `id`=?",
+    [two, three, four, five, six, over,under,id,],
     (er, result) => {
       if (er) {
         console.log("Error while update data: "+er);
