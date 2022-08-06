@@ -32,21 +32,23 @@ const updateProductNeck = async (req, res) => {
   const four = req.body.four;
   const five = req.body.five;
   const six = req.body.six;
+  const over = req.body.over;
+  const under = req.body.under;
   const brc_id = req.body.brc_id;
   console.log(id);
    db.query(`SELECT * FROM salelimit where brc_code='${brc_id}'`,(er,re)=>{
     if(er)return res.send("Error: "+er)
     if(re.length==0){
-      db.query(`INSERT INTO salelimit(brc_code, two_digits, three_digits, four_digits, five_digits, six_digits)VALUES(
-        '${brc_id}',${two},${three},${four},${five},${six}
+      db.query(`INSERT INTO salelimit(brc_code, two_digits, three_digits, four_digits, five_digits, six_digits,lim_over,lim_under)VALUES(
+        '${brc_id}',${two},${three},${four},${five},${six},${over},${under}
       )`,(er,re)=>{
         if(er) return res.send("Error: "+er)
         res.send("Transaction completed");
       });
     }else{
       db.query(
-        "UPDATE `salelimit` SET `two_digits`=?,`three_digits`=?,`four_digits`=?,`five_digits`=?,`six_digits`=? WHERE `brc_code`=?",
-        [two, three, four, five, six, brc_id],
+        "UPDATE `salelimit` SET `two_digits`=?,`three_digits`=?,`four_digits`=?,`five_digits`=?,`six_digits`=?,`lim_over`=?,`lim_under`=? WHERE `brc_code`=?",
+        [two, three, four, five, six,over,under, brc_id],
         (er, result) => {
           if (er) {
             console.log(er);
