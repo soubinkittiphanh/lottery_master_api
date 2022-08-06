@@ -15,7 +15,7 @@ const getISM = async (req, res) => {
   );
 };
 const createISM = async (req, res) => {
-  console.log("ISM PR OU: "+req.body.ism_res_pr_ou);
+  console.log("ISM PR OU 2: "+req.body.ism_res_pr_ou);
   const i_ref = req.body.ism_ref;
   const i_date = req.body.ism_date;
   const i_res_pr = req.body.ism_res_pr;
