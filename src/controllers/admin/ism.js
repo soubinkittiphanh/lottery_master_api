@@ -17,12 +17,18 @@ const getISM = async (req, res) => {
 const createISM = async (req, res) => {
   const i_ref = req.body.ism_ref;
   const i_date = req.body.ism_date;
-  const i_res = req.body.ism_res;
+  const i_res_pr = req.body.ism_res_pr;
+  const i_res_pr_ou = req.body.ism_res_ou;
+  const i_res_sec = req.body.ism_res_sec;
+  const i_res_sec_ou = req.body.ism_res_sec_ou;
+  const i_categoryId = req.body.ism_category;
   const i_active = req.body.ism_active;
+  const i_remark = req.body.ism_remark;
+  const i_endtime = req.body.ism_endtime;
   console.log("//::::::::::::::CREATE ISM::::::::::::::");
    db.query(
-    "INSERT INTO installment(ism_ref, ism_date, ism_result, ism_active) values(?,?,?,?)",
-    [i_ref, i_date, i_res, i_active],
+    "INSERT INTO installment(ism_ref, ism_date, ism_result_primary,ism_result_secondary,ism_result_primary_ou,ism_result_secondary_ou, ism_active,cat_id,remark,end_time) values(?,?,?,?,?,?,?,?,?,?)",
+    [i_ref, i_date, i_res_pr, i_res_sec,i_res_pr_ou,i_res_sec_ou,i_active,i_categoryId,i_remark,i_endtime],
     (err, result) => {
       if (err) {
         console.log(err);
@@ -36,14 +42,24 @@ const updateISM = async (req, res) => {
   const ref = req.body.ism_ref;
   const id = req.body.ism_id;
   const date = req.body.ism_date;
-  const result = req.body.ism_result;
+  const i_res_pr = req.body.ism_res_pr;
+  const i_res_pr_ou = req.body.ism_res_ou;
+  const i_res_sec = req.body.ism_res_sec;
+  const i_res_sec_ou = req.body.ism_res_sec_ou;
+  const i_categoryId = req.body.ism_category;
+  const i_remark = req.body.ism_remark;
+  const i_endtime = req.body.ism_endtime;
+  // ism_result_primary
+  // ism_result_primary_ou
+  // ism_result_secondary
+  // ism_result_secondary_ou
   const active = req.body.ism_active;
   console.log("//::::::::::::::UPDATE ISM::::::::::::::");
   console.log(id);
   console.log(result);
    db.query(
-    "UPDATE installment SET ism_ref= ?,ism_date=?,ism_result=?,ism_active=? WHERE id= ? ",
-    [ref, date, result, active, id],
+    "UPDATE installment SET ism_ref= ?,ism_date=?,ism_result_primary=?,ism_result_secondary=?,ism_result_primary_ou=?,ism_result_secondary_ou=?, ism_active=?,cat_id=?,remark=?,end_time=? WHERE id= ? ",
+    [ref, date, i_res_pr,i_res_sec,i_res_pr_ou,i_res_sec_ou, active,i_categoryId,i_remark,i_endtime, id],
     (err, result) => {
       if (err) {
         console.log(err);
