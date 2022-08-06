@@ -18,7 +18,7 @@ const createISM = async (req, res) => {
   const i_ref = req.body.ism_ref;
   const i_date = req.body.ism_date;
   const i_res_pr = req.body.ism_res_pr;
-  const i_res_pr_ou = req.body.ism_res_ou;
+  const i_res_pr_ou = req.body.ism_res_pr_ou;
   const i_res_sec = req.body.ism_res_sec;
   const i_res_sec_ou = req.body.ism_res_sec_ou;
   const i_categoryId = req.body.ism_category;
@@ -43,7 +43,7 @@ const updateISM = async (req, res) => {
   const id = req.body.ism_id;
   const date = req.body.ism_date;
   const i_res_pr = req.body.ism_res_pr;
-  const i_res_pr_ou = req.body.ism_res_ou;
+  const i_res_pr_ou = req.body.ism_res_pr_ou;
   const i_res_sec = req.body.ism_res_sec;
   const i_res_sec_ou = req.body.ism_res_sec_ou;
   const i_categoryId = req.body.ism_category;
