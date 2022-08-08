@@ -5,7 +5,7 @@ const reverse = async (req, res) => {
     const billId = req.body.billId;
     const cdate = req.body.cdate;
     const sqlDate=new Date().toISOString().slice(0, 19).replace('T', ' ');
-    console.log("SQL DATE: "+sqlDate +"PURE NODE DATE: "+new Date().getDate +" TIME: "+new Date().getTime);
+    console.log("SQL DATE: "+sqlDate +"PURE NODE DATE: "+new Date().getDate() +" TIME: "+new Date().getTime());
     console.log("------" + cdate);
     console.log(":::::::::::::::INVESTIGATE IF THE ISM IS CLOSE::::::::::");
     const sql_investigate = `SELECT s.mem_id,i.ism_active FROM sale s LEFT JOIN installment i ON s.ism_id= i.ism_ref WHERE s.sale_bill_id= ${billId}`;
