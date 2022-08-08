@@ -1,10 +1,11 @@
 const conn = require("../config/dbconn");
 const con = require("../config/dbconnPromise");
+const util=require("../config/customUtility");
 const reverse = async (req, res) => {
     console.log("//::::::::::::::CANCEL BILL::::::::::::::");
     const billId = req.body.billId;
     const cdate = req.body.cdate;
-    const sqlDate=new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const sqlDate=util.javaScriptToMysqlDate();
     console.log("SQL DATE: "+sqlDate +"PURE NODE DATE: "+new Date().getDate() +" TIME: "+new Date().getTime());
     console.log("------" + cdate);
     console.log(":::::::::::::::INVESTIGATE IF THE ISM IS CLOSE::::::::::");
