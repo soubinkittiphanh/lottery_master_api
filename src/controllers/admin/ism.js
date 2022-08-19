@@ -96,8 +96,10 @@ const getISMREF = async (req, res) => {
   console.log("//::::::::::::::GET ISM REF MAX::::::::::::::");
   const selectDate=req.query.sel_date;
   console.log("date: "+selectDate);
+  // const sqlCmd=`SELECT  * FROM installment  WHERE ism_active = 1 AND ism_date='${selectDate}'`;
+  const sqlCmd=`SELECT  * FROM installment  WHERE ism_active = 1 `;
    db.query(
-    `SELECT  * FROM installment  WHERE ism_active = 1 AND ism_date='${selectDate}'`,
+    sqlCmd,
     (err, result) => {
       if (err) {
         console.log(err);
