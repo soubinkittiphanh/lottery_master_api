@@ -53,22 +53,26 @@ const salerep = async (req, res) => {
   WHERE i.ism_date ="${r_date}" and s.mem_id="${r_mem_id}" ORDER BY s.mem_id`;
 
   if (r_admin === "true") {
-    sql = `SELECT s.is_cancel As is_cancel, s.sale_bill_id AS sale_bill_id,s.ism_id AS ism_id,s.mem_id AS mem_id,s.date AS date,s.sale_num AS sale_num,s.sale_price AS sale_price,i.ism_result_primary FROM installment i 
+    sql = `SELECT s.is_cancel As is_cancel, s.sale_bill_id AS sale_bill_id,
+    s.ism_id AS ism_id,s.mem_id AS mem_id,s.date AS date,s.sale_num AS sale_num,
+    s.sale_price AS sale_price,i.ism_result_primary FROM installment i 
     RIGHT JOIN sale s ON s.ism_id=i.ism_ref AND s.mem_id IN (SELECT mn.mem_id  FROM member mn WHERE mn.brc_code=(SELECT m.brc_code FROM member m WHERE m.mem_id='${r_mem_id}' ) )
-    WHERE i.ism_date ="${r_date}" ORDER BY s.mem_id`;
+    WHERE i.ism_date >="${r_date}" ORDER BY s.mem_id`;
     console.log("Admin: " + r_admin);
     if (p_master == 1) {
       console.log("::::::::::MASTER REPORT:::::::");
-      sql = `SELECT s.is_cancel As is_cancel, s.sale_bill_id AS sale_bill_id,s.ism_id AS ism_id,s.mem_id AS mem_id,s.date AS date,s.sale_num AS sale_num,s.sale_price AS sale_price,i.ism_result_primary FROM installment i 
-    RIGHT JOIN sale s ON s.ism_id=i.ism_ref
-    WHERE i.ism_date ="${r_date}" ORDER BY s.mem_id`;
+      sql = `SELECT s.is_cancel As is_cancel, s.sale_bill_id AS sale_bill_id,
+      s.ism_id AS ism_id,s.mem_id AS mem_id,s.date AS date,s.sale_num AS sale_num,
+      s.sale_price AS sale_price,i.ism_result_primary FROM installment i 
+      RIGHT JOIN sale s ON s.ism_id=i.ism_ref
+      WHERE i.ism_date >="${r_date}" ORDER BY s.mem_id`;
     }
   }
 
   console.log(r_date);
   db.query(sql, (er, result) => {
     if (er) {
-      console.log("Error getting report sale: "+er);
+      console.log("Error getting report sale: " + er);
       return res.send(er);
     } else {
       console.log("LENGTH RESULT: " + result.length);
