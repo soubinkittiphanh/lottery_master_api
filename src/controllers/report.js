@@ -102,24 +102,165 @@ const branchrep = async (req, res) => {
   const p_master = req.query.p_master;
   const p_mem_id = req.query.p_mem_id;
   console.log(p_mem_id + "======" + p_master);
+  const winSQL=`SELECT
+  m.brc_code,
+  w.mem_id,
+  b.co_comm AS company_sale_com_rate,
+  m.com_sale AS individual_sale_com_rate,
+  m.com_win AS individual_win_com_rate,
+  SUM(sale.sale_price) AS all_sale,
+  w.total AS all_sale_win,
+  w.total_win_pay_client,
+  SUM(sale.sale_price) * b.co_comm / 100 AS total_company_sale_com,
+  SUM(sale.sale_price) * m.com_sale / 100 AS total_individual_sale_com,
+  w.total_win_pay_client * m.com_win / 100 AS total_individual_win_com,
+  SUM(sale.sale_price) -(
+      (
+          SUM(sale.sale_price) * b.co_comm / 100
+      ) +(
+          w.total_win_pay_client * m.com_win / 100
+      ) + w.total_win_pay_client
+  ) AS totalreturn
+FROM
+  member m
+LEFT JOIN(
+  SELECT
+      s.sale_num,
+      SUM(s.sale_price) AS total,
+      SUM(
+          s.sale_price *(
+          SELECT
+              IF(
+                  LENGTH(s.sale_num) = 2,
+                  p.pay_two,
+                  IF(
+                      LENGTH(s.sale_num) = 3,
+                      p.pay_three,
+                      IF(
+                          LENGTH(s.sale_num) = 4,
+                          p.pay_four,
+                          IF(
+                              LENGTH(s.sale_num) = 5,
+                              p.pay_five,
+                              IF(
+                                  LENGTH(s.sale_num) = 6,
+                                  p.pay_six,
+                                  IF(
+                                      s.sale_num = "o",
+                                      p.pay_over,
+                                      IF(s.sale_num = "u", p.under, 0)
+                                  )
+                              )
+                          )
+                      )
+                  )
+              )
+          FROM
+              payrate p
+          WHERE
+              p.cat_id = s.cat_id
+      ) / 1000
+      ) AS total_win_pay_client,
+      s.sale_price,
+      s.mem_id,
+      sc.scat_name,
+      c.category_name,
+      i.ism_date
+  FROM
+      sale s
+  LEFT JOIN installment i ON
+      i.ism_ref = s.ism_id
+  LEFT JOIN t_category c ON
+      s.cat_id = c.category_id
+  LEFT JOIN sub_category sc ON
+      sc.scat_id = s.sub_cat_id
+  WHERE
+      s.ism_id IN(
+      SELECT
+          ism_id
+      FROM
+          installment
+      WHERE
+          ism_date >= "2022-02-21"
+  ) AND s.is_cancel = 0 AND(
+      IF(
+          s.sub_cat_id = 10,
+          s.sale_num = i.ism_result_primary,
+          s.sale_num = i.ism_result_secondary
+      ) OR IF(
+          s.sub_cat_id = 10,
+          s.sale_num = SUBSTRING(i.ism_result_primary, -5, 5),
+          s.sale_num = SUBSTRING(i.ism_result_secondary, -5, 5)
+      ) OR IF(
+          s.sub_cat_id = 10,
+          s.sale_num = SUBSTRING(i.ism_result_primary, -4, 4),
+          s.sale_num = SUBSTRING(i.ism_result_secondary, -4, 4)
+      ) OR IF(
+          s.sub_cat_id = 10,
+          s.sale_num = SUBSTRING(i.ism_result_primary, -3, 3),
+          s.sale_num = SUBSTRING(i.ism_result_secondary, -3, 3)
+      ) OR IF(
+          s.sub_cat_id = 10,
+          s.sale_num = SUBSTRING(i.ism_result_primary, -2, 2),
+          s.sale_num = SUBSTRING(i.ism_result_secondary, -2, 2)
+      ) OR IF(
+          s.sub_cat_id = 10,
+          s.sale_num = i.ism_result_primary_ou,
+          s.sale_num = i.ism_result_secondary_ou
+      )
+  )
+GROUP BY
+  s.mem_id
+) w
+ON
+  w.mem_id = m.mem_id
+LEFT JOIN branch b ON
+  b.co_code = m.brc_code
+LEFT JOIN sale sale ON
+  sale.mem_id = m.mem_id AND sale.is_cancel = 0 AND sale.ism_id IN(
+  SELECT
+      ism.ism_ref
+  FROM
+      installment ism
+  WHERE
+      ism.ism_date >= "2022-02-21 00:00:00"
+)
+GROUP BY
+  m.mem_id`
   const sql = `
   SELECT m.brc_code,b.co_comm,m.com_sale,m.com_win, SUM(s.sale_price ) AS total,win.win_amount,SUM(s.sale_price )*b.co_comm/100 AS total_com1,SUM(s.sale_price )*m.com_win/100 AS total_com2, 
-SUM(s.sale_price )-((SUM(s.sale_price )*b.co_comm/100)+(SUM(win.win_amount )*m.com_win/100)+win.win_amount)
-AS totalreturn
-FROM member m 
-LEFT JOIN sale s ON m.mem_id=s.mem_id AND s.is_cancel=0 AND s.ism_id=(SELECT MAX(i.ism_ref) FROM installment i) 
-LEFT JOIN branch b ON m.brc_code=b.co_code
-LEFT JOIN
- (SELECT u.brc_code,i.ism_result_primary,SUM(s.sale_price*(SELECT IF(LENGTH(s.sale_num)=2,pay_two,IF(LENGTH(s.sale_num)=3,pay_three,IF(LENGTH(s.sale_num)=4,pay_four,IF(LENGTH(s.sale_num)=5,pay_five,pay_six)))) FROM payrate) /1000) AS win_amount 
+  SUM(s.sale_price )-((SUM(s.sale_price )*b.co_comm/100)+(SUM(win.win_amount )*m.com_win/100)+win.win_amount)
+  AS totalreturn
+  FROM member m 
+  LEFT JOIN sale s ON m.mem_id=s.mem_id AND s.is_cancel=0 AND s.ism_id=(SELECT MAX(i.ism_ref) FROM installment i) 
+  LEFT JOIN branch b ON m.brc_code=b.co_code
+  LEFT JOIN
+ (SELECT u.brc_code,i.ism_result_primary,
+  SUM(s.sale_price*(SELECT IF(LENGTH(s.sale_num)=2,pay_two,IF(LENGTH(s.sale_num)=3,pay_three,IF(LENGTH(s.sale_num)=4,pay_four,IF(LENGTH(s.sale_num)=5,pay_five,pay_six)))) FROM payrate) /1000) AS win_amount 
  FROM installment i 
  RIGHT JOIN sale s ON s.ism_id=i.ism_ref AND s.is_cancel=0 
  RIGHT JOIN member u ON u.mem_id=s.mem_id
  WHERE i.ism_date =(SELECT MAX(ism_date) FROM installment) AND (s.sale_num = SUBSTRING(i.ism_result_primary, -6, 6) OR s.sale_num = SUBSTRING(i.ism_result_primary, -5, 5) OR s.sale_num = SUBSTRING(i.ism_result_primary, -4, 4) OR s.sale_num = SUBSTRING(i.ism_result_primary, -3, 3) OR s.sale_num = SUBSTRING(i.ism_result_primary, -2, 2)) 
- GROUP BY u.brc_code ORDER BY u.brc_code ) AS win ON win.brc_code=m.brc_code
+ GROUP BY u.brc_code ORDER BY u.brc_code ) AS win ON win.brc_code=m.brc_code GROUP BY m.brc_code`;
+  
  
-GROUP BY m.brc_code
-  `;
-  db.query(sql, (err, result) => {
+//  const sql = `
+//   SELECT m.brc_code,b.co_comm,m.com_sale,m.com_win, SUM(s.sale_price ) AS total,win.win_amount,SUM(s.sale_price )*b.co_comm/100 AS total_com1,SUM(s.sale_price )*m.com_win/100 AS total_com2, 
+//   SUM(s.sale_price )-((SUM(s.sale_price )*b.co_comm/100)+(SUM(win.win_amount )*m.com_win/100)+win.win_amount)
+//   AS totalreturn
+//   FROM member m 
+//   LEFT JOIN sale s ON m.mem_id=s.mem_id AND s.is_cancel=0 AND s.ism_id=(SELECT MAX(i.ism_ref) FROM installment i) 
+//   LEFT JOIN branch b ON m.brc_code=b.co_code
+//   LEFT JOIN
+//  (SELECT u.brc_code,i.ism_result_primary,SUM(s.sale_price*(SELECT IF(LENGTH(s.sale_num)=2,pay_two,IF(LENGTH(s.sale_num)=3,pay_three,IF(LENGTH(s.sale_num)=4,pay_four,IF(LENGTH(s.sale_num)=5,pay_five,pay_six)))) FROM payrate) /1000) AS win_amount 
+//  FROM installment i 
+//  RIGHT JOIN sale s ON s.ism_id=i.ism_ref AND s.is_cancel=0 
+//  RIGHT JOIN member u ON u.mem_id=s.mem_id
+//  WHERE i.ism_date =(SELECT MAX(ism_date) FROM installment) AND (s.sale_num = SUBSTRING(i.ism_result_primary, -6, 6) OR s.sale_num = SUBSTRING(i.ism_result_primary, -5, 5) OR s.sale_num = SUBSTRING(i.ism_result_primary, -4, 4) OR s.sale_num = SUBSTRING(i.ism_result_primary, -3, 3) OR s.sale_num = SUBSTRING(i.ism_result_primary, -2, 2)) 
+//  GROUP BY u.brc_code ORDER BY u.brc_code ) AS win ON win.brc_code=m.brc_code GROUP BY m.brc_code  `;
+ 
+ 
+ db.query(winSQL, (err, result) => {
     if (err) {
       console.log(err);
       res.send("ເກີດຂໍ້ຜິດພາດທາງດ້ານເຊີເວີ: " + err);
