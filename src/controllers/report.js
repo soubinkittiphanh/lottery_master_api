@@ -108,18 +108,31 @@ const branchrep = async (req, res) => {
   b.co_comm AS company_sale_com_rate,
   m.com_sale AS individual_sale_com_rate,
   m.com_win AS individual_win_com_rate,
-  SUM(sale.sale_price) AS all_sale,
-  w.total AS all_sale_win,
-  w.total_win_pay_client,
-  SUM(sale.sale_price) * b.co_comm / 100 AS total_company_sale_com,
-  SUM(sale.sale_price) * m.com_sale / 100 AS total_individual_sale_com,
-  w.total_win_pay_client * m.com_win / 100 AS total_individual_win_com,
-  SUM(sale.sale_price) -(
-      (
-          SUM(sale.sale_price) * b.co_comm / 100
-      ) +(
-          w.total_win_pay_client * m.com_win / 100
-      ) + w.total_win_pay_client
+  IFNULL(SUM(sale.sale_price),
+  0) AS all_sale,
+  IFNULL(w.total, 0) AS all_sale_win,
+  IFNULL(w.total_win_pay_client, 0),
+  IFNULL(
+      SUM(sale.sale_price) * b.co_comm / 100,
+      0
+  ) AS total_company_sale_com,
+  IFNULL(
+      SUM(sale.sale_price) * m.com_sale / 100,
+      0
+  ) AS total_individual_sale_com,
+  IFNULL(
+      w.total_win_pay_client * m.com_win / 100,
+      0
+  ) AS total_individual_win_com,
+  IFNULL(
+      SUM(sale.sale_price) -(
+          (
+              SUM(sale.sale_price) * b.co_comm / 100
+          ) +(
+              w.total_win_pay_client * m.com_win / 100
+          ) + w.total_win_pay_client
+      ),
+      0
   ) AS totalreturn
 FROM
   member m
