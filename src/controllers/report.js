@@ -239,7 +239,7 @@ LEFT JOIN sale sale ON
       ism.ism_date >= "2022-02-21 00:00:00"
 )
 GROUP BY
-  m.mem_id`
+  m.brc_code`
   const sql = `
   SELECT m.brc_code,b.co_comm,m.com_sale,m.com_win, SUM(s.sale_price ) AS total,win.win_amount,SUM(s.sale_price )*b.co_comm/100 AS total_com1,SUM(s.sale_price )*m.com_win/100 AS total_com2, 
   SUM(s.sale_price )-((SUM(s.sale_price )*b.co_comm/100)+(SUM(win.win_amount )*m.com_win/100)+win.win_amount)
