@@ -1,5 +1,5 @@
 const db = require("../../config/dbconn");
-const bcrypt=require("../../../custom-bcrypt");
+const bcrypt = require("../../../custom-bcrypt");
 const createMember = async (req, res) => {
   console.log("::::::::::::::create user::::::::::::::");
   const name = req.body.name;
@@ -21,7 +21,7 @@ const createMember = async (req, res) => {
   console.log(tel);
 
   console.log("::::::::::::::LICENSE CREATE USER::::::::::::::");
-   db.query(
+  db.query(
     "SELECT app_max,COUNT(mem_id) AS mem_id FROM tbl_license, member WHERE app_name='member'",
     (err, result) => {
       if (err) {
@@ -29,14 +29,14 @@ const createMember = async (req, res) => {
       } else {
         console.log(
           "RESULTS BRANCH:" +
-            result[0]["mem_id"] +
-            " MAX: " +
-            result[0]["app_max"]
+          result[0]["mem_id"] +
+          " MAX: " +
+          result[0]["app_max"]
         );
         if (result[0]["mem_id"] < result[0]["app_max"]) {
           console.log("::::::::::::::LICENSE CREATE USER ALLOW::::::::::::::");
 
-           db.query(
+          db.query(
             `SELECT mem_id FROM member WHERE mem_name='${name}'`,
             (err, result) => {
               if (err) {
@@ -45,7 +45,7 @@ const createMember = async (req, res) => {
                 if (result.length >= 1) {
                   res.send("ເກີດຂໍ້ຜິດພາດ: ຊື່ຜູ້ໃຊ້ງານຊ້ຳກັນ Douplicate data");
                 } else {
-                   db.query(
+                  db.query(
                     "INSERT IGNORE INTO `member`( `mem_id`,`brc_code`,`group_code`, `mem_pass`, `mem_name`, `mem_lname`, `mem_village`, `mem_dist`, `mem_pro`, `active`, `admin`,`mem_rec`,`mem_tel`,`com_sale`,`com_win`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                     [
                       logid,
@@ -108,7 +108,7 @@ const updateMember = async (req, res) => {
   const group_code = req.body.group_code;
   console.log("up id" + id);
   console.log("up id" + name);
-   db.query(
+  db.query(
     "UPDATE `member` SET `mem_id`=?,`brc_code`=?,`mem_name`=?,`mem_lname`=?,`mem_village`=?,`mem_dist`=?,`mem_pro`=?,`active`=?,`admin`=?,`mem_rec`=?,`mem_tel`=?,`com_sale`=?,`com_win`=?,`group_code`=? WHERE `id`=?",
     [
       logid,
@@ -143,7 +143,7 @@ const resetPassword = async (req, res) => {
   const id = req.body.id;
   const logpass = bcrypt.hash(req.body.logpass); //req.body.logpass;
   console.log("up id" + id);
-   db.query(
+  db.query(
     "UPDATE `member` SET `mem_pass`=? WHERE `id`=?",
     [logpass, id],
     (err, result) => {
@@ -160,7 +160,7 @@ const resetPassword = async (req, res) => {
 //::::::::::::::GEN MEMID::::::::::::::
 const genId = async (req, res) => {
   console.log("//::::::::::::::GEN MEMID::::::::::::::");
-   db.query(
+  db.query(
     "SELECT MAX(mem_id) AS mem_id FROM `member` HAVING MAX(mem_id) IS NOT null ",
     (err, result) => {
       if (err) {
@@ -181,7 +181,7 @@ const getMemberById = async (req, res) => {
   console.log("//::::::::::::::FETCH MEMBER ID::::::::::::::");
   console.log("USER ID: " + param_id);
   const sql_query = " SELECT * FROM `member` WHERE id = " + param_id;
-   db.query(sql_query, (err, result) => {
+  db.query(sql_query, (err, result) => {
     if (err) {
       console.log(err);
       res.send("ເກີດຂໍ້ຜິດພາດທາງດ້ານເຊີເວີ: " + err);
@@ -198,7 +198,7 @@ const getMember = async (req, res) => {
 
   console.log(p_mem_id + "======" + p_master);
 
-  let newSql=`SELECT
+  let newSql = `SELECT
   m.*,
   SUM(s.sale_price) AS total,
   win.sale_num,
@@ -311,111 +311,110 @@ GROUP BY
 ORDER BY
   m.brc_code,
   m.mem_name`;
-const newSqlAdmin=`SELECT
-m.*,
-SUM(s.sale_price) AS total,
-win.sale_num,
-win.sale_price,
-win.win_amount
+  const newSqlAdmin = `SELECT
+  m.*,
+  SUM(s.sale_price) AS total,
+  win.sale_num,
+  win.sale_price,
+  win.win_amount
 FROM
-member m
+  member m
 LEFT JOIN sale s ON
-m.mem_id = s.mem_id AND s.is_cancel = 0 AND s.ism_id =(
-SELECT
-    MAX(i.ism_ref)
-FROM
-    installment i
+  m.mem_id = s.mem_id AND s.is_cancel = 0 AND s.ism_id IN(
+  SELECT
+      i.ism_ref
+  FROM
+      installment i
+  WHERE
+      i.ism_date >= '2022-02-21 00:00:00'
 )
 LEFT JOIN(
-SELECT
-    s.*,
-    SUM(
-        s.sale_price *(
-        SELECT
-            IF(
-                LENGTH(s.sale_num) = 2,
-                p.pay_two,
-                IF(
-                    LENGTH(s.sale_num) = 3,
-                    p.pay_three,
-                    IF(
-                        LENGTH(s.sale_num) = 4,
-                        p.pay_four,
-                        IF(
-                            LENGTH(s.sale_num) = 5,
-                            p.pay_five,
-                            IF(
-                                LENGTH(s.sale_num) = 6,
-                                p.pay_six,
-                                IF(
-                                    s.sale_num = "o",
-                                    p.pay_over,
-                                    IF(s.sale_num = "u", p.under, 0)
-                                )
-                            )
-                        )
-                    )
-                )
-            )
-        FROM
-            payrate p
-        WHERE
-            p.cat_id = s.cat_id
-    ) / 1000
-    ) AS win_amount
-FROM
-    installment i
-RIGHT JOIN sale s ON
-    s.ism_id = i.ism_ref AND s.is_cancel = 0
-WHERE
-    i.ism_date >= "2022-02-21 00:00:00" AND(
-        IF(
-            s.sub_cat_id = 10,
-            s.sale_num = i.ism_result_primary,
-            s.sale_num = i.ism_result_secondary
-        ) OR IF(
-            s.sub_cat_id = 10,
-            s.sale_num = SUBSTRING(i.ism_result_primary, -5, 5),
-            s.sale_num = SUBSTRING(i.ism_result_secondary, -5, 5)
-        ) OR IF(
-            s.sub_cat_id = 10,
-            s.sale_num = SUBSTRING(i.ism_result_primary, -4, 4),
-            s.sale_num = SUBSTRING(i.ism_result_secondary, -4, 4)
-        ) OR IF(
-            s.sub_cat_id = 10,
-            s.sale_num = SUBSTRING(i.ism_result_primary, -3, 3),
-            s.sale_num = SUBSTRING(i.ism_result_secondary, -3, 3)
-        ) OR IF(
-            s.sub_cat_id = 10,
-            s.sale_num = SUBSTRING(i.ism_result_primary, -2, 2),
-            s.sale_num = SUBSTRING(i.ism_result_secondary, -2, 2)
-        ) OR IF(
-            s.sub_cat_id = 10,
-            s.sale_num = i.ism_result_primary_ou,
-            s.sale_num = i.ism_result_secondary_ou
-        )
-    )
-GROUP BY
-    s.mem_id
-ORDER BY
-    s.id
-DESC
+  SELECT
+      s.*,
+      SUM(
+          s.sale_price *(
+          SELECT
+              IF(
+                  LENGTH(s.sale_num) = 2,
+                  pay_two,
+                  IF(
+                      LENGTH(s.sale_num) = 3,
+                      pay_three,
+                      IF(
+                          LENGTH(s.sale_num) = 4,
+                          pay_four,
+                          IF(
+                              LENGTH(s.sale_num) = 5,
+                              pay_five,
+                              IF(
+                                  LENGTH(s.sale_num) = 6,
+                                  pay_six,
+                                  IF(
+                                      s.sale_num = "o",
+                                      pay_over,
+                                      IF(s.sale_num = "u", under, 0)
+                                  )
+                              )
+                          )
+                      )
+                  )
+              )
+          FROM
+              payrate WHERE cat_id=s.cat_id
+      ) / 1000
+      ) AS win_amount
+  FROM
+      installment i
+  RIGHT JOIN sale s ON
+      s.ism_id = i.ism_ref AND s.is_cancel = 0
+  WHERE
+      i.ism_date >= '2022-02-21 00:00:00' AND(
+          IF(
+              s.sub_cat_id = 10,
+              s.sale_num = i.ism_result_primary,
+              s.sale_num = i.ism_result_secondary
+          ) OR IF(
+              s.sub_cat_id = 10,
+              s.sale_num = SUBSTRING(i.ism_result_primary, -5, 5),
+              s.sale_num = SUBSTRING(i.ism_result_secondary, -5, 5)
+          ) OR IF(
+              s.sub_cat_id = 10,
+              s.sale_num = SUBSTRING(i.ism_result_primary, -4, 4),
+              s.sale_num = SUBSTRING(i.ism_result_secondary, -4, 4)
+          ) OR IF(
+              s.sub_cat_id = 10,
+              s.sale_num = SUBSTRING(i.ism_result_primary, -3, 3),
+              s.sale_num = SUBSTRING(i.ism_result_secondary, -3, 3)
+          ) OR IF(
+              s.sub_cat_id = 10,
+              s.sale_num = SUBSTRING(i.ism_result_primary, -2, 2),
+              s.sale_num = SUBSTRING(i.ism_result_secondary, -2, 2)
+          ) OR IF(
+              s.sub_cat_id = 10,
+              s.sale_num = i.ism_result_primary_ou,
+              s.sale_num = i.ism_result_secondary_ou
+          )
+      )
+  GROUP BY
+      s.mem_id
+  ORDER BY
+      s.id
+  DESC
 ) AS win
 ON
-win.mem_id = m.mem_id
-
+  win.mem_id = m.mem_id
 GROUP BY
-m.id
+  m.id
 ORDER BY
-m.brc_code,
-m.mem_name`;
-  let sql = `SELECT m.*, SUM(s.sale_price ) AS total,win.sale_num,win.sale_price,win.win_amount FROM member m LEFT JOIN sale s ON m.mem_id=s.mem_id AND s.is_cancel=0 AND s.ism_id=(SELECT MAX(i.ism_ref) FROM installment i) LEFT JOIN (SELECT s.*,i.ism_result,SUM(s.sale_price*(SELECT IF(LENGTH(s.sale_num)=2,pay_two,IF(LENGTH(s.sale_num)=3,pay_three,IF(LENGTH(s.sale_num)=4,pay_four,IF(LENGTH(s.sale_num)=5,pay_five,pay_six)))) FROM payrate) /1000) AS win_amount FROM installment i RIGHT JOIN sale s ON s.ism_id=i.ism_ref AND s.is_cancel=0 WHERE i.ism_date =(SELECT MAX(ism_date) FROM installment) AND (s.sale_num = SUBSTRING(i.ism_result, -6, 6) OR s.sale_num = SUBSTRING(i.ism_result, -5, 5) OR s.sale_num = SUBSTRING(i.ism_result, -4, 4) OR s.sale_num = SUBSTRING(i.ism_result, -3, 3) OR s.sale_num = SUBSTRING(i.ism_result, -2, 2)) GROUP BY s.mem_id  ORDER BY s.id DESC) AS win ON win.mem_id=m.mem_id WHERE m.mem_id IN (SELECT mn.mem_id  FROM member mn WHERE mn.brc_code=(SELECT m.brc_code FROM member m WHERE m.mem_id='${p_mem_id}' ) ) GROUP BY m.id ORDER BY m.brc_code,m.mem_name`;
+  m.brc_code,
+  m.mem_name`;
+  let sql = `SELECT m.*, SUM(s.sale_price ) AS total,win.sale_num,win.sale_price,win.win_amount FROM member m LEFT JOIN sale s ON m.mem_id=s.mem_id AND s.is_cancel=0 AND s.ism_id=(SELECT MAX(i.ism_ref) FROM installment i) LEFT JOIN (SELECT s.*,i.ism_result,SUM(s.sale_price*(SELECT IF(LENGTH(s.sale_num)=2,pay_two,IF(LENGTH(s.sale_num)=3,pay_three,IF(LENGTH(s.sale_num)=4,pay_four,IF(LENGTH(s.sale_num)=5,pay_five,pay_six)))) FROM payrate) /1000) AS win_amount FROM installment i RIGHT JOIN sale s ON s.ism_id=i.ism_ref AND s.is_cancel=0 WHERE i.ism_date =(SELECT MAX(ism_date) FROM installment) AND (s.sale_num = SUBSTRING(i.ism_result, -6, 6) OR s.sale_num = SUBSTRING(i.ism_result, -5, 5) OR s.sale_num = SUBSTRING(i.ism_result, -4, 4) OR s.sale_num = SUBSTRING(i.ism_result, -3, 3) OR s.sale_num = SUBSTRING(i.ism_result, -2, 2)) GROUP BY s.mem_id  ORDER BY s.id DESC) AS win ON win.mem_id=m.mem_id WHERE m.mem_id IN (SELECT mn.mem_id FROM member mn WHERE mn.brc_code=(SELECT m.brc_code FROM member m WHERE m.mem_id='${p_mem_id}' ) ) GROUP BY m.id ORDER BY m.brc_code,m.mem_name`;
   if (p_master == 1) {
     console.log("::::::::::MASTER REPORT:::::::");
     sql =
-            "SELECT m.*, SUM(s.sale_price ) AS total,win.sale_num,win.sale_price,win.win_amount FROM member m LEFT JOIN sale s ON m.mem_id=s.mem_id AND s.is_cancel=0 AND s.ism_id=(SELECT MAX(i.ism_ref) FROM installment i) LEFT JOIN (SELECT s.*,i.ism_result,SUM(s.sale_price*(SELECT IF(LENGTH(s.sale_num)=2,pay_two,IF(LENGTH(s.sale_num)=3,pay_three,IF(LENGTH(s.sale_num)=4,pay_four,IF(LENGTH(s.sale_num)=5,pay_five,pay_six)))) FROM payrate) /1000) AS win_amount FROM installment i RIGHT JOIN sale s ON s.ism_id=i.ism_ref AND s.is_cancel=0 WHERE i.ism_date =(SELECT MAX(ism_date) FROM installment) AND (s.sale_num = SUBSTRING(i.ism_result, -6, 6) OR s.sale_num = SUBSTRING(i.ism_result, -5, 5) OR s.sale_num = SUBSTRING(i.ism_result, -4, 4) OR s.sale_num = SUBSTRING(i.ism_result, -3, 3) OR s.sale_num = SUBSTRING(i.ism_result, -2, 2)) GROUP BY s.mem_id  ORDER BY s.id DESC) AS win ON win.mem_id=m.mem_id GROUP BY m.id ORDER BY m.brc_code,m.mem_name";
+      "SELECT m.*, SUM(s.sale_price ) AS total,win.sale_num,win.sale_price,win.win_amount FROM member m LEFT JOIN sale s ON m.mem_id=s.mem_id AND s.is_cancel=0 AND s.ism_id=(SELECT MAX(i.ism_ref) FROM installment i) LEFT JOIN (SELECT s.*,i.ism_result,SUM(s.sale_price*(SELECT IF(LENGTH(s.sale_num)=2,pay_two,IF(LENGTH(s.sale_num)=3,pay_three,IF(LENGTH(s.sale_num)=4,pay_four,IF(LENGTH(s.sale_num)=5,pay_five,pay_six)))) FROM payrate) /1000) AS win_amount FROM installment i RIGHT JOIN sale s ON s.ism_id=i.ism_ref AND s.is_cancel=0 WHERE i.ism_date =(SELECT MAX(ism_date) FROM installment) AND (s.sale_num = SUBSTRING(i.ism_result, -6, 6) OR s.sale_num = SUBSTRING(i.ism_result, -5, 5) OR s.sale_num = SUBSTRING(i.ism_result, -4, 4) OR s.sale_num = SUBSTRING(i.ism_result, -3, 3) OR s.sale_num = SUBSTRING(i.ism_result, -2, 2)) GROUP BY s.mem_id  ORDER BY s.id DESC) AS win ON win.mem_id=m.mem_id GROUP BY m.id ORDER BY m.brc_code,m.mem_name";
   }
-   db.query(newSqlAdmin, (err, result) => {
+  db.query(newSqlAdmin, (err, result) => {
     if (err) {
       console.log(err);
       res.send("ເກີດຂໍ້ຜິດພາດທາງດ້ານເຊີເວີ: " + err);
