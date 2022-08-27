@@ -12,7 +12,7 @@ const login = async (req, res) => {
         if (er) return res.json({ status: "05", desc: er })
         if (re.length==0) return res.json("Error: ໄອດີບໍ່ ຖືກຕ້ອງ")
         const realPassword = re[0]["mem_pass"];
-        const credential = { userId: re[0]["mem_id"], brcCode: re[0]["brc_code"], groupCode: re[0]["group_code"], userName: re[0]["mem_name"], userLname: re[0]["mem_lname"], userTel: re[0]["mem_tel"],comSate:re[0]["com_sale"] }
+        const credential = { userId: re[0]["mem_id"], brcCode: re[0]["brc_code"], groupCode: re[0]["group_code"], userName: re[0]["mem_name"], userLname: re[0]["mem_lname"], userTel: re[0]["mem_tel"],comSale:re[0]["com_sale"] }
         try {
             const isAuth = bcrypt.compare(password, realPassword)
             if (isAuth) {
