@@ -1,6 +1,6 @@
 
-const Db=require("../config/dbconn");
-const bcrypt=require("bcryptjs");
+// const Db=require("../config/dbconn");
+// const bcrypt=require("bcryptjs");
 const jwt=require("jsonwebtoken");
 const conf=require("../config");
 const secret=conf.actksecret;

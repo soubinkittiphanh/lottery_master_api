@@ -3,7 +3,7 @@ const db=require('../config/dbconn');
 const saleReport=async(req,res)=>{
     const {memId,fromIsmDate} = req.query;
 
-    const sqlCmd=`SELECT s.*,sc.scat_name,c.category_name,i.ism_date FROM sale s
+    const sqlCmd=`SELECT s.*,sc.scat_name,c.category_name,i.ism_date,i.end_time FROM sale s
     LEFT JOIN t_category c ON s.cat_id=c.category_id 
     LEFT JOIN sub_category sc ON sc.scat_id=s.sub_cat_id
     LEFT JOIN installment i ON i.ism_ref=s.ism_id
