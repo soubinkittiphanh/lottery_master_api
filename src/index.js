@@ -1,6 +1,11 @@
 const buildApp = require("./models/app.js");
 const conf=require("./config");
 
+autoService=()=>{
+  let dateObj = new Date(Date.now()).toLocaleString();
+  let day = new Date
+  console.log("Worker is runing", dateObj, day.getDay());
+}
 const startApp = async () => {
   const appOption = {
     logger: true,
@@ -9,6 +14,7 @@ const startApp = async () => {
   const app = await buildApp(appOption);
   app.listen(conf.port,()=>{
     console.log("Your app is runing  :"+conf.port+' | :'+conf.db.database);
+    setInterval(autoService, 3000);
   })
 
   // try {
